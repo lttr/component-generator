@@ -13,12 +13,6 @@
           </button>
         </div>
 
-        <div
-          v-if="showTailwindCode"
-          class="code-display"
-          v-html="highlightedTailwindCode"
-        ></div>
-
         <div v-if="tailwindError" class="error-message">
           Error rendering Tailwind component: {{ tailwindError }}
         </div>
@@ -26,6 +20,12 @@
         <div v-else ref="tailwindContainer" class="preview-content">
           <!-- Tailwind component will be inserted here -->
         </div>
+
+        <div
+          v-if="showTailwindCode"
+          class="code-display"
+          v-html="highlightedTailwindCode"
+        ></div>
       </div>
 
       <!-- Puleo Component -->
@@ -37,12 +37,6 @@
           </button>
         </div>
 
-        <div
-          v-if="showPuleoCode"
-          class="code-display"
-          v-html="highlightedPuleoCode"
-        ></div>
-
         <div v-if="puleoError" class="error-message">
           Error rendering Puleo component: {{ puleoError }}
         </div>
@@ -50,6 +44,12 @@
         <div v-else ref="puleoContainer" class="preview-content">
           <!-- Puleo component will be inserted here -->
         </div>
+
+        <div
+          v-if="showPuleoCode"
+          class="code-display"
+          v-html="highlightedPuleoCode"
+        ></div>
       </div>
     </div>
   </div>
@@ -176,12 +176,10 @@ const renderPuleoComponent = async (code: string) => {
         // Create shadow root
         const shadow = this.attachShadow({ mode: "open" })
 
-        // Add Puleo CSS CDN
-        const puleoLink = document.createElement("link")
-        puleoLink.rel = "stylesheet"
-        puleoLink.href =
-          "https://cdn.jsdelivr.net/npm/@lttr/puleo/output/puleo.min.css"
-        shadow.appendChild(puleoLink)
+        // Add Puleo CSS via @import in style tag (better shadow DOM support)
+        const styleElement = document.createElement("style")
+        styleElement.textContent = `@import url("https://cdn.jsdelivr.net/npm/@lttr/puleo/output/puleo.min.css");`
+        shadow.appendChild(styleElement)
 
         // Create a container for the generated HTML
         const container = document.createElement("div")
