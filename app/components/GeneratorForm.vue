@@ -6,6 +6,7 @@
         id="description"
         v-model="description"
         :disabled="loading"
+        placeholder="A card component with heading, subheading, text, date and link to read more"
         class="description-input"
         rows="4"
       >
