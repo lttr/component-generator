@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-This is a **Component Generator** application built with Nuxt 4 that allows users to generate Vue components dynamically using Claude's API. Users input a natural language description of a component, and the application generates and renders the Vue component in real-time.
+This is a **Component Generator** application built with Nuxt 4 that allows users to generate Web Components dynamically using Claude's API. Users input a natural language description of a component, and the application generates and renders scoped Web Components with Tailwind CSS v4 in real-time.
 
 ## Commands
 
@@ -32,8 +32,8 @@ This is a **Component Generator** application built with Nuxt 4 that allows user
 
 1. **User Input** → `GeneratorForm.vue` captures component description
 2. **API Call** → `/api/generate-component` endpoint calls Claude API
-3. **Component Generation** → Claude generates Vue component code
-4. **Dynamic Rendering** → `ComponentRenderer.vue` compiles and displays the component
+3. **Component Generation** → Claude generates Web Components with Shadow DOM and Tailwind CSS v4
+4. **Dynamic Rendering** → `ComponentRenderer.vue` injects and displays the Web Component
 
 ### Key Components
 
@@ -41,11 +41,11 @@ This is a **Component Generator** application built with Nuxt 4 that allows user
 
 - `app/pages/index.vue` - Main page with form and preview
 - `app/components/GeneratorForm.vue` - Input form for component descriptions
-- `app/components/ComponentRenderer.vue` - Dynamically compiles and renders generated components
+- `app/components/ComponentRenderer.vue` - Dynamically injects and renders generated Web Components
 
 **Backend:**
 
-- `server/api/generate-component.post.ts` - API endpoint that calls Claude to generate components
+- `server/api/generate-component.post.ts` - API endpoint that calls Claude to generate Web Components
 
 ### Environment Configuration
 
@@ -57,15 +57,16 @@ NUXT_ANTHROPIC_API_KEY=sk-ant-api03-...
 
 This is accessed via `useRuntimeConfig().anthropicApiKey` in the server API.
 
-### Dynamic Component Rendering
+### Dynamic Web Component Rendering
 
 The `ComponentRenderer` component:
 
-- Parses generated Vue SFC code (template, script, style)
-- Extracts common reactive properties (title, subtitle, text, date, link)
-- Uses Vue's `defineComponent` to create renderable components
-- Handles basic `<script setup>` syntax with ref() parsing
+- Accepts Web Component code with Shadow DOM and Tailwind CSS v4
+- Safely injects Web Component HTML into a preview container
+- Executes minimal JavaScript for custom element registration
+- Handles script cleanup to prevent memory leaks
 - Provides error handling and code display toggle
+- Components are properly scoped using Shadow DOM
 
 ### Claude API Integration
 
@@ -73,14 +74,15 @@ The server endpoint:
 
 - Uses `@anthropic-ai/sdk` package
 - Calls `claude-3-5-sonnet-20241022` model
-- Sends structured prompt requesting Vue 3 composition API components
-- Returns only the component code for client-side rendering
+- Sends structured prompt requesting Web Components with Shadow DOM
+- Uses Tailwind CSS v4 via `https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4`
+- Returns complete Web Component code with proper scoping and no custom JavaScript logic
 
 ## Technical Notes
 
 - Uses Nuxt 4 with Vue 3 composition API
 - Components are auto-imported from `~/components`
-- Styled with inline CSS (no external CSS framework)
+- Uses Tailwind CSS v4 for styling via CDN in generated components
 - TypeScript enabled with strict type checking
 - ESLint + Prettier for code formatting
 - Always verify code after changes with `npm run verify` command.
