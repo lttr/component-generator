@@ -7,18 +7,16 @@
       </button>
     </div>
 
-    <div class="preview-content">
-      <div v-if="error" class="error-message">
-        Error rendering component: {{ error }}
-      </div>
+    <div v-if="showCode" class="code-display">
+      <pre><code>{{ componentCode }}</code></pre>
+    </div>
 
-      <div v-else ref="previewContainer" class="component-preview">
-        <!-- HTML content will be inserted here -->
-      </div>
+    <div v-if="error" class="error-message">
+      Error rendering component: {{ error }}
+    </div>
 
-      <div v-if="showCode" class="code-display">
-        <pre><code>{{ componentCode }}</code></pre>
-      </div>
+    <div v-else ref="previewContainer" class="preview-content">
+      <!-- HTML content will be inserted here -->
     </div>
   </div>
 </template>
@@ -143,14 +141,7 @@ watch(
 
 .preview-content {
   padding: 2rem;
-}
-
-.component-preview {
   min-height: 200px;
-  padding: 1rem;
-  border: 2px dashed #e2e8f0;
-  border-radius: 8px;
-  background: #fafafa;
 }
 
 .error-message {
@@ -162,7 +153,7 @@ watch(
 }
 
 .code-display {
-  margin-top: 1.5rem;
+  margin-bottom: 1.5rem;
   background: #2d3748;
   border-radius: 8px;
   overflow-x: auto;
@@ -171,6 +162,8 @@ watch(
 .code-display pre {
   margin: 0;
   padding: 1.5rem;
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }
 
 .code-display code {
