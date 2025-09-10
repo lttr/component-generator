@@ -14,6 +14,8 @@ export default defineNuxtConfig({
     },
   ],
   devtools: { enabled: true },
+  // Custom styles
+  css: ["~~/app/assets/css/main.css"],
   site: {
     // TODO Configure site
     url: "https://example.com",
@@ -21,6 +23,9 @@ export default defineNuxtConfig({
     description: "Website description",
     defaultLocale: "en",
     indexable: false,
+  },
+  runtimeConfig: {
+    anthropicApiKey: "",
   },
   experimental: {
     typedPages: true,
@@ -33,6 +38,4 @@ export default defineNuxtConfig({
       },
     },
   },
-  // Custom styles
-  css: ["~~/app/assets/css/main.css"],
 })
