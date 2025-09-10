@@ -12,8 +12,8 @@
         Error rendering component: {{ error }}
       </div>
 
-      <div v-else class="component-preview">
-        <component :is="compiledComponent" v-if="compiledComponent" />
+      <div v-else ref="previewContainer" class="component-preview">
+        <!-- HTML content will be inserted here -->
       </div>
 
       <div v-if="showCode" class="code-display">
@@ -24,7 +24,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineComponent, ref, watch, type Component } from "vue"
+import { ref, watch, nextTick } from "vue"
 
 interface Props {
   componentCode: string
@@ -34,80 +34,56 @@ const props = defineProps<Props>()
 
 const showCode = ref<boolean>(false)
 const error = ref<string>("")
-const compiledComponent = ref<Component | null>(null)
+const previewContainer = ref<HTMLElement | null>(null)
 
-const compileComponent = (code: string) => {
+const renderHtmlComponent = async (code: string) => {
   try {
     error.value = ""
 
-    // Extract template
-    const templateMatch = code.match(/<template>([\s\S]*?)<\/template>/)
-    const template =
-      templateMatch?.[1]?.trim() ?? "<div>No template found</div>"
-
-    // Extract script setup content
-    const scriptSetupMatch = code.match(
-      /<script\s+setup[^>]*>([\s\S]*?)<\/script>/,
-    )
-
-    // For simplicity, create a basic component with just the template
-    // In a production app, you'd want more sophisticated parsing for script setup
-    const componentDef: Record<string, unknown> = {
-      template: template,
-      setup() {
-        // Basic reactive refs for common properties
-        const title = ref("Sample Title")
-        const subtitle = ref("Sample Subtitle")
-        const text = ref("This is sample text content.")
-        const date = ref("2024-01-01")
-        const link = ref("#")
-
-        // If there's script setup content, try to extract simple refs
-        if (scriptSetupMatch?.[1]) {
-          const scriptContent = scriptSetupMatch[1]
-
-          // Look for ref definitions and extract their values
-          const refMatches = scriptContent.matchAll(
-            /const\s+(\w+)\s*=\s*ref\(['"`]([^'"`]*?)['"`]\)/g,
-          )
-          for (const match of refMatches) {
-            const [, varName, value] = match
-            if (varName === "title" && value) {
-              title.value = value
-            } else if (varName === "subtitle" && value) {
-              subtitle.value = value
-            } else if (varName === "text" && value) {
-              text.value = value
-            } else if (varName === "date" && value) {
-              date.value = value
-            } else if (varName === "link" && value) {
-              link.value = value
-            }
-          }
-        }
-
-        return {
-          title,
-          subtitle,
-          text,
-          date,
-          link,
-        }
-      },
+    if (!previewContainer.value) {
+      return
     }
 
-    compiledComponent.value = defineComponent(componentDef)
+    // Clear previous content
+    previewContainer.value.innerHTML = ""
+
+    // Create a container for the HTML content
+    const wrapper = document.createElement("div")
+    wrapper.innerHTML = code
+
+    // Extract and execute any script tags
+    const scripts = wrapper.querySelectorAll("script")
+    scripts.forEach((script) => {
+      const newScript = document.createElement("script")
+      if (script.src) {
+        newScript.src = script.src
+      } else {
+        newScript.textContent = script.textContent
+      }
+      // Remove the script from the wrapper to avoid duplicate execution
+      script.remove()
+      // Append the script to execute it
+      document.head.appendChild(newScript)
+      // Clean up after execution
+      setTimeout(() => document.head.removeChild(newScript), 100)
+    })
+
+    // Append the HTML content to the preview container
+    previewContainer.value.appendChild(wrapper)
   } catch (e: unknown) {
     error.value = e instanceof Error ? e.message : "Unknown error"
-    compiledComponent.value = null
+    if (previewContainer.value) {
+      previewContainer.value.innerHTML = ""
+    }
   }
 }
 
 watch(
   () => props.componentCode,
-  (newCode) => {
+  async (newCode) => {
     if (newCode) {
-      compileComponent(newCode)
+      await nextTick()
+      renderHtmlComponent(newCode)
     }
   },
   { immediate: true },
