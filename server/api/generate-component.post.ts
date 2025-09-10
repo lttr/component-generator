@@ -26,23 +26,31 @@ export default defineEventHandler(async (event) => {
     })
 
     const message = await anthropic.messages.create({
-      model: "claude-3-5-sonnet-20241022",
+      model: "claude-3-5-sonnet-20250106",
       max_tokens: 2000,
       messages: [
         {
           role: "user",
-          content: `Create a Vue 3 component based on this description: "${description}"
+          content: `Create a Web Component based on this description: "${description}"
 
 Requirements:
-- Use Vue 3 composition API with <script setup> syntax
-- Include proper TypeScript types if needed
-- Make it visually appealing with inline styles in <style scoped>
-- Use semantic HTML elements
-- Make it responsive
-- Only return the complete Vue component code, nothing else
-- The component should be self-contained and functional
+- Create a proper Web Component using custom elements and Shadow DOM
+- Use semantic HTML elements within the shadow root
+- Use Tailwind CSS v4 utility classes for ALL styling (no inline CSS)
+- Include Tailwind CSS v4 via: <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+- Make it responsive and modern-looking using Tailwind classes
+- DO NOT include any JavaScript logic beyond the minimal web component registration
+- The component should be self-contained and properly scoped
+- Use proper HTML structure and accessibility attributes
 
-Return only the Vue component code wrapped in <template>, <script setup>, and <style scoped> tags.`,
+Structure:
+1. A <template> element with an id
+2. Include the Tailwind CSS v4 browser script inside the template
+3. HTML content using Tailwind v4 utility classes
+4. The custom element tag
+5. Minimal <script> to register the web component with Shadow DOM
+
+Return only the complete Web Component code. No explanations, no markdown formatting, no code blocks (```), just the raw HTML/JavaScript code.`,
         },
       ],
     })
