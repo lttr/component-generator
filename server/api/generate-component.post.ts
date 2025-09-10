@@ -39,6 +39,7 @@ Requirements:
 - Make it responsive and modern-looking using Tailwind classes
 - Use proper HTML structure and accessibility attributes
 - NO JavaScript, NO custom elements, NO Shadow DOM - just plain HTML with Tailwind classes
+- NO inline SVG elements - use text, emojis, or CSS-based graphics instead
 - The HTML should be ready to be inserted into a web component programmatically
 
 Return only the HTML content with Tailwind classes. No explanations, no markdown formatting, no triple backticks, no <script> tags, just the raw HTML with Tailwind classes.`,
