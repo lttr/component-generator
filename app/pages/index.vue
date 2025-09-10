@@ -2,28 +2,42 @@
   <div class="container">
     <h1 class="title">Component Generator</h1>
     <GeneratorForm :loading="loading" @generate="handleGenerate" />
-    <ComponentRenderer
-      v-if="generatedComponent"
-      :component-code="generatedComponent"
+    <DualComponentRenderer
+      v-if="tailwindComponent || puleoComponent"
+      :tailwind-code="tailwindComponent"
+      :puleo-code="puleoComponent"
     />
   </div>
 </template>
 
 <script setup lang="ts">
-const generatedComponent = ref<string>("")
+const tailwindComponent = ref<string>("")
+const puleoComponent = ref<string>("")
 const loading = ref<boolean>(false)
 
 const handleGenerate = async (description: string) => {
   loading.value = true
   try {
-    const response = await $fetch<{
-      success: boolean
-      data: { component: string }
-    }>("/api/generate-component", {
-      method: "POST",
-      body: { description },
-    })
-    generatedComponent.value = response.data.component
+    // Call both APIs in parallel
+    const [tailwindResponse, puleoResponse] = await Promise.all([
+      $fetch<{
+        success: boolean
+        data: { component: string }
+      }>("/api/generate-component", {
+        method: "POST",
+        body: { description },
+      }),
+      $fetch<{
+        success: boolean
+        data: { component: string }
+      }>("/api/generate-component-puleo", {
+        method: "POST",
+        body: { description },
+      }),
+    ])
+
+    tailwindComponent.value = tailwindResponse.data.component
+    puleoComponent.value = puleoResponse.data.component
   } catch (error) {
     console.error("Failed to generate component:", error)
   } finally {
