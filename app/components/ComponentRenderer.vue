@@ -7,9 +7,7 @@
       </button>
     </div>
 
-    <div v-if="showCode" class="code-display">
-      <pre><code>{{ componentCode }}</code></pre>
-    </div>
+    <div v-if="showCode" class="code-display" v-html="highlightedCode"></div>
 
     <div v-if="error" class="error-message">
       Error rendering component: {{ error }}
@@ -22,7 +20,8 @@
 </template>
 
 <script setup lang="ts">
-import { ref, watch, nextTick } from "vue"
+import { ref, watch, nextTick, computed } from "vue"
+import { createHighlighter } from "shiki"
 
 interface Props {
   componentCode: string
@@ -33,6 +32,31 @@ const props = defineProps<Props>()
 const showCode = ref<boolean>(false)
 const error = ref<string>("")
 const previewContainer = ref<HTMLElement | null>(null)
+const highlightedCode = ref<string>("")
+
+let highlighter: any = null
+
+const initHighlighter = async () => {
+  if (!highlighter) {
+    highlighter = await createHighlighter({
+      themes: ["vitesse-dark"],
+      langs: ["html"],
+    })
+  }
+}
+
+const updateHighlightedCode = async () => {
+  if (!props.componentCode) {
+    highlightedCode.value = ""
+    return
+  }
+
+  await initHighlighter()
+  highlightedCode.value = highlighter.codeToHtml(props.componentCode, {
+    lang: "html",
+    theme: "vitesse-dark",
+  })
+}
 
 const renderHtmlComponent = async (code: string) => {
   try {
@@ -94,6 +118,7 @@ watch(
     if (newCode) {
       await nextTick()
       renderHtmlComponent(newCode)
+      updateHighlightedCode()
     }
   },
   { immediate: true },
@@ -154,22 +179,21 @@ watch(
 
 .code-display {
   margin-bottom: 1.5rem;
-  background: #2d3748;
   border-radius: 8px;
   overflow-x: auto;
 }
 
-.code-display pre {
+.code-display :deep(pre) {
   margin: 0;
   padding: 1.5rem;
   white-space: pre-wrap;
   word-wrap: break-word;
+  border-radius: 8px;
 }
 
-.code-display code {
-  color: #e2e8f0;
+.code-display :deep(code) {
   font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
-  font-size: 0.9rem;
+  font-size: 1.1rem;
   line-height: 1.5;
 }
 </style>
