@@ -26,31 +26,22 @@ export default defineEventHandler(async (event) => {
     })
 
     const message = await anthropic.messages.create({
-      model: "claude-3-5-sonnet-20250106",
-      max_tokens: 2000,
+      model: "claude-sonnet-4-20250514",
+      max_tokens: 1500,
       messages: [
         {
           role: "user",
-          content: `Create a Web Component based on this description: "${description}"
+          content: `Generate HTML content for a component based on this description: "${description}"
 
 Requirements:
-- Create a proper Web Component using custom elements and Shadow DOM
-- Use semantic HTML elements within the shadow root
-- Use Tailwind CSS v4 utility classes for ALL styling (no inline CSS)
-- Include Tailwind CSS v4 via: <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+- Generate ONLY semantic HTML with Tailwind CSS utility classes
+- Use Tailwind CSS v4 syntax and classes for ALL styling
 - Make it responsive and modern-looking using Tailwind classes
-- DO NOT include any JavaScript logic beyond the minimal web component registration
-- The component should be self-contained and properly scoped
 - Use proper HTML structure and accessibility attributes
+- NO JavaScript, NO custom elements, NO Shadow DOM - just plain HTML with Tailwind classes
+- The HTML should be ready to be inserted into a web component programmatically
 
-Structure:
-1. A <template> element with an id
-2. Include the Tailwind CSS v4 browser script inside the template
-3. HTML content using Tailwind v4 utility classes
-4. The custom element tag
-5. Minimal <script> to register the web component with Shadow DOM
-
-Return only the complete Web Component code. No explanations, no markdown formatting, no code blocks (```), just the raw HTML/JavaScript code.`,
+Return only the HTML content with Tailwind classes. No explanations, no markdown formatting, no triple backticks, no <script> tags, just the raw HTML with Tailwind classes.`,
         },
       ],
     })

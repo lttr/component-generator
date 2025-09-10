@@ -44,32 +44,44 @@ const renderHtmlComponent = async (code: string) => {
       return
     }
 
-    // Clear previous content
+    // Clear previous content and remove any existing custom elements
     previewContainer.value.innerHTML = ""
 
-    // Create a container for the HTML content
-    const wrapper = document.createElement("div")
-    wrapper.innerHTML = code
+    // Remove any previously registered custom elements
+    const existingElements = document.querySelectorAll("generated-component")
+    existingElements.forEach((el) => el.remove())
 
-    // Extract and execute any script tags
-    const scripts = wrapper.querySelectorAll("script")
-    scripts.forEach((script) => {
-      const newScript = document.createElement("script")
-      if (script.src) {
-        newScript.src = script.src
-      } else {
-        newScript.textContent = script.textContent
+    // Create a unique component name to avoid conflicts
+    const componentName = `generated-component-${Date.now()}`
+
+    // Create the web component programmatically
+    class GeneratedComponent extends HTMLElement {
+      constructor() {
+        super()
+
+        // Create shadow root
+        const shadow = this.attachShadow({ mode: "open" })
+
+        // Add Tailwind CSS v4 CDN
+        const tailwindScript = document.createElement("script")
+        tailwindScript.src = "https://cdn.tailwindcss.com/"
+        shadow.appendChild(tailwindScript)
+
+        // Create a container for the generated HTML
+        const container = document.createElement("div")
+        container.innerHTML = code
+        shadow.appendChild(container)
       }
-      // Remove the script from the wrapper to avoid duplicate execution
-      script.remove()
-      // Append the script to execute it
-      document.head.appendChild(newScript)
-      // Clean up after execution
-      setTimeout(() => document.head.removeChild(newScript), 100)
-    })
+    }
 
-    // Append the HTML content to the preview container
-    previewContainer.value.appendChild(wrapper)
+    // Register the custom element
+    if (!customElements.get(componentName)) {
+      customElements.define(componentName, GeneratedComponent)
+    }
+
+    // Create and append the component
+    const componentElement = document.createElement(componentName)
+    previewContainer.value.appendChild(componentElement)
   } catch (e: unknown) {
     error.value = e instanceof Error ? e.message : "Unknown error"
     if (previewContainer.value) {

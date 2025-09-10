@@ -73,7 +73,7 @@ The `ComponentRenderer` component:
 The server endpoint:
 
 - Uses `@anthropic-ai/sdk` package
-- Calls `claude-3-5-sonnet-20241022` model
+- Calls `claude-sonnet-4-20250514` model
 - Sends structured prompt requesting Web Components with Shadow DOM
 - Uses Tailwind CSS v4 via `https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4`
 - Returns complete Web Component code with proper scoping and no custom JavaScript logic
