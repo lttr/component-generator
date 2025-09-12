@@ -136,6 +136,9 @@ onMounted(() => {
   box-shadow:
     0 0 10px rgba(0, 255, 255, 0.3),
     inset 0 0 20px rgba(0, 0, 0, 0.8);
+  transition:
+    animation-duration 0.6s ease-in-out,
+    opacity 0.3s ease-in-out;
 }
 
 .vhs-reel::before {
@@ -178,15 +181,19 @@ onMounted(() => {
 }
 
 .vhs-reel.spinning-fast {
-  animation-duration: 0.5s !important;
+  animation-duration: 1.2s !important;
+  opacity: 0.9;
+  box-shadow:
+    0 0 15px rgba(0, 255, 255, 0.5),
+    inset 0 0 20px rgba(0, 0, 0, 0.8);
 }
 
 .vhs-reel.spinning-fast.vhs-reel-left {
-  animation-duration: 0.3s !important;
+  animation-duration: 1s !important;
 }
 
 .vhs-reel.spinning-fast.vhs-reel-right {
-  animation-duration: 0.4s !important;
+  animation-duration: 1.4s !important;
   animation-direction: reverse;
 }
 
