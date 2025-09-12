@@ -1,6 +1,6 @@
 export default defineEventHandler(async (event) => {
   try {
-    const { description } = await readBody(event)
+    const { description, html } = await readBody(event)
 
     if (!description) {
       throw createError({
@@ -9,7 +9,28 @@ export default defineEventHandler(async (event) => {
       })
     }
 
-    const prompt = `Requirements:
+    let prompt: string
+
+    if (html) {
+      // If HTML is provided, add Tailwind classes without changing structure
+      prompt = `Requirements:
+- Add ONLY Tailwind CSS v4 utility classes to the provided HTML
+- DO NOT change the HTML structure, elements, or content - only add class attributes
+- Use Tailwind CSS v4 syntax and classes for ALL styling
+- Make it responsive and modern-looking using Tailwind classes
+- Preserve all existing attributes and accessibility features
+- NO JavaScript, NO custom elements, NO Shadow DOM modifications
+- NO inline SVG elements - use text, emojis, or CSS-based graphics instead
+
+Provided HTML:
+${html}
+
+Component Description: ${description}
+
+Return only the HTML content with Tailwind classes added. No explanations, no markdown formatting, no triple backticks, no <script> tags, just the raw HTML with Tailwind classes.`
+    } else {
+      // Fallback to original behavior if no HTML provided
+      prompt = `Requirements:
 - Generate ONLY semantic HTML with Tailwind CSS utility classes
 - Use Tailwind CSS v4 syntax and classes for ALL styling
 - Make it responsive and modern-looking using Tailwind classes
@@ -18,9 +39,12 @@ export default defineEventHandler(async (event) => {
 - NO inline SVG elements - use text, emojis, or CSS-based graphics instead
 - The HTML should be ready to be inserted into a web component programmatically
 
-Return only the HTML content with Tailwind classes. No explanations, no markdown formatting, no triple backticks, no <script> tags, just the raw HTML with Tailwind classes.`
+Component Description: ${description}
 
-    const componentCode = await generateComponent(description, prompt)
+Return only the HTML content with Tailwind classes. No explanations, no markdown formatting, no triple backticks, no <script> tags, just the raw HTML with Tailwind classes.`
+    }
+
+    const componentCode = await callClaude(prompt)
 
     return {
       success: true,
