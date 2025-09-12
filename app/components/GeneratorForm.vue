@@ -77,7 +77,7 @@
         @click="generate"
       >
         <div class="vhs-button-icon">
-          <div class="vhs-play-icon">▶</div>
+          <div class="vhs-play-icon"></div>
         </div>
         <div class="vhs-button-text">
           {{ loading ? "PROCESSING" : "EXECUTE" }}
@@ -141,8 +141,8 @@ const stopGlitch = () => {
 }
 
 const setActiveTab = async (tab: "empty" | "example" | "random") => {
-  console.log("Tab clicked:", tab, "loading:", loading.value)
-  if (loading.value) return
+  console.log("Tab clicked:", tab, "loading:", props.loading)
+  if (props.loading) return
 
   activeTab.value = tab
 
@@ -454,12 +454,12 @@ onUnmounted(() => {
 }
 
 .vhs-play-icon {
-  font-size: 1.5rem;
-  text-shadow: 0 0 10px currentColor;
-  line-height: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 0;
+  height: 0;
+  border-left: 10px solid currentColor;
+  border-top: 6px solid transparent;
+  border-bottom: 6px solid transparent;
+  filter: drop-shadow(0 0 5px currentColor);
 }
 
 .vhs-button-text {
