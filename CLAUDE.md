@@ -86,3 +86,4 @@ The server endpoint:
 - TypeScript enabled with strict type checking
 - ESLint + Prettier for code formatting
 - Always verify code after changes with `npm run verify` command.
+- do not start the dev server it is already running
