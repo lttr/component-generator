@@ -1,1 +1,366 @@
-/* Add your custom styles here */
+/* VHS Retro-Futuristic Design System */
+
+@import url("https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Space+Mono:wght@400;700&display=swap");
+
+/* CSS Variables for VHS Color Palette */
+:root {
+  /* Primary gradients */
+  --vhs-gradient-sunset: linear-gradient(
+    135deg,
+    #ffd700 0%,
+    #ff69b4 50%,
+    #4169e1 100%
+  );
+  --vhs-gradient-neon: linear-gradient(
+    90deg,
+    #ff1493 0%,
+    #00ffff 50%,
+    #00ff00 100%
+  );
+  --vhs-gradient-holographic: linear-gradient(
+    45deg,
+    #ff0080 0%,
+    #ff8c00 25%,
+    #ffd700 50%,
+    #00ff80 75%,
+    #0080ff 100%
+  );
+
+  /* Background colors */
+  --vhs-bg-dark: #2a2a2a;
+  --vhs-bg-black: #000000;
+  --vhs-bg-gradient: linear-gradient(135deg, #2a2a2a 0%, #000000 100%);
+
+  /* Text colors */
+  --vhs-text-white: #ffffff;
+  --vhs-text-cream: #f5f5dc;
+  --vhs-text-glow: 0 0 10px currentColor;
+
+  /* Accent colors */
+  --vhs-pink: #ff1493;
+  --vhs-cyan: #00ffff;
+  --vhs-neon-green: #00ff00;
+  --vhs-orange: #ff8c00;
+
+  /* Effects */
+  --vhs-scan-lines: repeating-linear-gradient(
+    90deg,
+    transparent,
+    transparent 2px,
+    rgba(255, 255, 255, 0.03) 2px,
+    rgba(255, 255, 255, 0.03) 4px
+  );
+
+  --vhs-diagonal-stripes: repeating-linear-gradient(
+    45deg,
+    transparent,
+    transparent 10px,
+    rgba(255, 20, 147, 0.1) 10px,
+    rgba(255, 20, 147, 0.1) 20px
+  );
+}
+
+/* Global styles */
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  background: var(--vhs-bg-gradient);
+  color: var(--vhs-text-cream);
+  font-family: "Space Mono", monospace;
+  margin: 0;
+  padding: 0;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Global scan line overlay */
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--vhs-scan-lines);
+  pointer-events: none;
+  z-index: 1000;
+  opacity: 0.5;
+}
+
+/* Geometric pattern overlay */
+body::after {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--vhs-diagonal-stripes);
+  pointer-events: none;
+  z-index: 999;
+  opacity: 0.3;
+}
+
+/* Typography classes */
+.vhs-header {
+  font-family: "Orbitron", monospace;
+  font-weight: 900;
+  background: var(--vhs-gradient-sunset);
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: var(--vhs-text-glow);
+  letter-spacing: 0.1em;
+}
+
+.vhs-text {
+  font-family: "Space Mono", monospace;
+  color: var(--vhs-text-cream);
+}
+
+.vhs-terminal {
+  font-family: "Space Mono", monospace;
+  background: rgba(0, 0, 0, 0.8);
+  border: 2px solid var(--vhs-cyan);
+  color: var(--vhs-cyan);
+  text-shadow: 0 0 5px currentColor;
+}
+
+/* VHS Button styles */
+.vhs-button {
+  background: var(--vhs-gradient-holographic);
+  border: 2px solid var(--vhs-pink);
+  color: var(--vhs-text-white);
+  font-family: "Orbitron", monospace;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  padding: 1rem 2rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.vhs-button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 100%
+  );
+  transition: left 0.5s ease;
+}
+
+.vhs-button:hover::before {
+  left: 100%;
+}
+
+.vhs-button:hover {
+  box-shadow:
+    0 0 20px var(--vhs-pink),
+    inset 0 0 20px rgba(255, 20, 147, 0.2);
+  transform: translateY(-2px);
+}
+
+/* VHS Card styles */
+.vhs-card {
+  background: rgba(42, 42, 42, 0.9);
+  border: 2px solid var(--vhs-cyan);
+  border-radius: 8px;
+  padding: 2rem;
+  position: relative;
+  backdrop-filter: blur(10px);
+}
+
+.vhs-card::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--vhs-scan-lines);
+  border-radius: 6px;
+  pointer-events: none;
+}
+
+/* Glitch effect utility */
+.vhs-glitch {
+  position: relative;
+}
+
+.vhs-glitch::before,
+.vhs-glitch::after {
+  content: attr(data-text);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: transparent;
+}
+
+.vhs-glitch::before {
+  color: var(--vhs-pink);
+  animation: vhs-glitch-1 0.5s infinite linear alternate-reverse;
+}
+
+.vhs-glitch::after {
+  color: var(--vhs-cyan);
+  animation: vhs-glitch-2 0.5s infinite linear alternate-reverse;
+}
+
+/* VHS Animations */
+@keyframes vhs-glitch-1 {
+  0% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-2px);
+  }
+  40% {
+    transform: translateX(2px);
+  }
+  60% {
+    transform: translateX(-1px);
+  }
+  80% {
+    transform: translateX(1px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes vhs-glitch-2 {
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(1px);
+  }
+  50% {
+    transform: translateX(-1px);
+  }
+  75% {
+    transform: translateX(2px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+@keyframes vhs-scan {
+  0% {
+    transform: translateY(-100%);
+  }
+  100% {
+    transform: translateY(100vh);
+  }
+}
+
+@keyframes vhs-shimmer {
+  0% {
+    background-position: -1000px 0;
+  }
+  100% {
+    background-position: 1000px 0;
+  }
+}
+
+/* VHS tracking effect */
+.vhs-tracking {
+  animation: vhs-tracking 0.2s ease-in-out;
+}
+
+@keyframes vhs-tracking {
+  0% {
+    transform: skew(0deg);
+    filter: hue-rotate(0deg);
+  }
+  25% {
+    transform: skew(1deg);
+    filter: hue-rotate(90deg);
+  }
+  50% {
+    transform: skew(-1deg);
+    filter: hue-rotate(180deg);
+  }
+  75% {
+    transform: skew(0.5deg);
+    filter: hue-rotate(270deg);
+  }
+  100% {
+    transform: skew(0deg);
+    filter: hue-rotate(360deg);
+  }
+}
+
+/* Neon glow utility */
+.vhs-glow {
+  box-shadow:
+    0 0 5px currentColor,
+    0 0 10px currentColor,
+    0 0 15px currentColor,
+    0 0 20px currentColor;
+}
+
+/* VHS Label styling */
+.vhs-label {
+  background: linear-gradient(45deg, #333 0%, #666 100%);
+  border: 1px solid var(--vhs-orange);
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+  font-family: "Space Mono", monospace;
+  color: var(--vhs-orange);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  display: inline-block;
+}
+
+/* Grid system for retro layouts */
+.vhs-grid {
+  display: grid;
+  gap: 2rem;
+  position: relative;
+  z-index: 10;
+}
+
+/* Animation stopper - stops all animations after initial load */
+.stop-animations *,
+.stop-animations *::before,
+.stop-animations *::after {
+  animation-play-state: paused !important;
+}
+
+/* Keep tape reels spinning when loading */
+.stop-animations .spinning-fast {
+  animation-play-state: running !important;
+}
+
+/* Responsive utilities */
+@media (max-width: 768px) {
+  .vhs-button {
+    padding: 0.75rem 1.5rem;
+    font-size: 0.9rem;
+  }
+
+  .vhs-card {
+    padding: 1.5rem;
+  }
+}

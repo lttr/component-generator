@@ -20,13 +20,23 @@ export const generateComponent = async (
 
   const message = await anthropic.messages.create({
     model: "claude-sonnet-4-20250514",
-    max_tokens: 1500,
+    max_tokens: 4000,
     messages: [
       {
         role: "user",
-        content: `Generate HTML content for a component based on this description: "${description}"
+        content: [
+          {
+            type: "text",
+            text: `You are a web component generator. You create HTML components based on user descriptions.
 
 ${prompt}`,
+            cache_control: { type: "ephemeral" },
+          },
+          {
+            type: "text",
+            text: `Generate HTML content for a component based on this description: "${description}"`,
+          },
+        ],
       },
     ],
   })

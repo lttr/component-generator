@@ -1,199 +1,471 @@
 <template>
-  <div class="renderer-container">
-    <div class="preview-header">
-      <h2>Generated Component</h2>
-      <button class="toggle-btn" @click="showCode = !showCode">
-        {{ showCode ? "Hide Code" : "Show Code" }}
-      </button>
+  <div class="vhs-monitor-container">
+    <!-- VHS Monitor Header -->
+    <div class="vhs-monitor-header">
+      <div class="vhs-channel-controls">
+        <span class="vhs-channel-label">CH-A</span>
+        <span class="vhs-channel-divider">|</span>
+        <span class="vhs-channel-label">CH-B</span>
+      </div>
+      <div class="vhs-monitor-brand">CLAUDE VISION™ DUAL-SYNC</div>
+      <div class="vhs-signal-indicator">
+        <div class="vhs-signal-light"></div>
+        <span>SIGNAL</span>
+      </div>
     </div>
 
-    <div v-if="showCode" class="code-display" v-html="highlightedCode"></div>
-
-    <div v-if="error" class="error-message">
-      Error rendering component: {{ error }}
+    <!-- Dual Monitor Display -->
+    <div class="vhs-screen-container">
+      <div class="vhs-screen-bezel">
+        <TailwindRenderer :component-code="tailwindCode" />
+      </div>
+      <div class="vhs-screen-bezel">
+        <PuleoRenderer :component-code="puleoCode" />
+      </div>
     </div>
 
-    <div v-else ref="previewContainer" class="preview-content">
-      <!-- HTML content will be inserted here -->
+    <!-- VHS Control Bar -->
+    <div class="vhs-control-bar">
+      <div class="vhs-decorative-panel">
+        <div class="vhs-warning-label">⚠ WARRANTY VOID IF FUN</div>
+        <div class="vhs-serial-label">S/N: CLAUDE-4</div>
+        <div class="vhs-tape-counter">
+          <span class="vhs-counter-digit">1</span>
+          <span class="vhs-counter-digit">3</span>
+          <span class="vhs-counter-digit">3</span>
+          <span class="vhs-counter-digit">7</span>
+        </div>
+        <div class="vhs-inspection-label">✓ INSPECTED BY #42</div>
+        <div class="vhs-mode-indicator">AI MODE</div>
+      </div>
+      <div class="vhs-tracking-control">
+        <span>TRACKING</span>
+        <div class="vhs-tracking-slider">
+          <div class="vhs-tracking-indicator"></div>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref, watch, nextTick, computed } from "vue"
-import { createHighlighter } from "shiki"
-
 interface Props {
-  componentCode: string
+  tailwindCode: string
+  puleoCode: string
 }
 
-const props = defineProps<Props>()
-
-const showCode = ref<boolean>(false)
-const error = ref<string>("")
-const previewContainer = ref<HTMLElement | null>(null)
-const highlightedCode = ref<string>("")
-
-let highlighter: any = null
-
-const initHighlighter = async () => {
-  if (!highlighter) {
-    highlighter = await createHighlighter({
-      themes: ["vitesse-dark"],
-      langs: ["html"],
-    })
-  }
-}
-
-const updateHighlightedCode = async () => {
-  if (!props.componentCode) {
-    highlightedCode.value = ""
-    return
-  }
-
-  await initHighlighter()
-  highlightedCode.value = highlighter.codeToHtml(props.componentCode, {
-    lang: "html",
-    theme: "vitesse-dark",
-  })
-}
-
-const renderHtmlComponent = async (code: string) => {
-  try {
-    error.value = ""
-
-    if (!previewContainer.value) {
-      return
-    }
-
-    // Clear previous content and remove any existing custom elements
-    previewContainer.value.innerHTML = ""
-
-    // Remove any previously registered custom elements
-    const existingElements = document.querySelectorAll("generated-component")
-    existingElements.forEach((el) => el.remove())
-
-    // Create a unique component name to avoid conflicts
-    const componentName = `generated-component-${Date.now()}`
-
-    // Create the web component programmatically
-    class GeneratedComponent extends HTMLElement {
-      constructor() {
-        super()
-
-        // Create shadow root
-        const shadow = this.attachShadow({ mode: "open" })
-
-        // Add Tailwind CSS v4 CDN
-        const tailwindScript = document.createElement("script")
-        tailwindScript.src = "https://cdn.tailwindcss.com/"
-        shadow.appendChild(tailwindScript)
-
-        // Create a container for the generated HTML
-        const container = document.createElement("div")
-        container.innerHTML = code
-        shadow.appendChild(container)
-      }
-    }
-
-    // Register the custom element
-    if (!customElements.get(componentName)) {
-      customElements.define(componentName, GeneratedComponent)
-    }
-
-    // Create and append the component
-    const componentElement = document.createElement(componentName)
-    previewContainer.value.appendChild(componentElement)
-  } catch (e: unknown) {
-    error.value = e instanceof Error ? e.message : "Unknown error"
-    if (previewContainer.value) {
-      previewContainer.value.innerHTML = ""
-    }
-  }
-}
-
-watch(
-  () => props.componentCode,
-  async (newCode) => {
-    if (newCode) {
-      await nextTick()
-      renderHtmlComponent(newCode)
-      updateHighlightedCode()
-    }
-  },
-  { immediate: true },
-)
+defineProps<Props>()
 </script>
 
 <style scoped>
-.renderer-container {
-  background: white;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
+.vhs-monitor-container {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
+  border: 4px solid var(--vhs-orange);
+  border-radius: 16px;
+  padding: 1.5rem;
+  position: relative;
   overflow: hidden;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+  box-shadow:
+    0 12px 48px rgba(0, 0, 0, 0.8),
+    inset 0 2px 0 rgba(255, 255, 255, 0.1),
+    0 0 30px rgba(255, 140, 0, 0.3);
 }
 
-.preview-header {
+.vhs-monitor-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--vhs-scan-lines);
+  opacity: 0.2;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* Monitor Header */
+.vhs-monitor-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.5rem;
-  background: #f8f9fa;
-  border-bottom: 1px solid #e2e8f0;
+  margin-bottom: 1rem;
+  padding: 0.75rem 1rem;
+  background: linear-gradient(90deg, #333 0%, #555 50%, #333 100%);
+  border: 2px solid var(--vhs-cyan);
+  border-radius: 8px;
+  position: relative;
+  z-index: 10;
 }
 
-.preview-header h2 {
-  margin: 0;
-  font-size: 1.5rem;
-  color: #2d3748;
+.vhs-channel-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: "Space Mono", monospace;
+  font-weight: 700;
+  color: var(--vhs-cyan);
+  text-shadow: 0 0 5px currentColor;
 }
 
-.toggle-btn {
-  background: #4299e1;
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
-  cursor: pointer;
+.vhs-channel-label {
+  background: rgba(0, 0, 0, 0.8);
+  border: 1px solid var(--vhs-cyan);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.8rem;
+  letter-spacing: 0.05em;
+}
+
+.vhs-channel-divider {
+  font-size: 1.2rem;
+  margin: 0 0.25rem;
+  opacity: 0.6;
+}
+
+.vhs-monitor-brand {
+  font-family: "Orbitron", monospace;
+  font-weight: 700;
   font-size: 0.9rem;
-  transition: background-color 0.2s ease;
+  color: var(--vhs-orange);
+  text-shadow: 0 0 8px currentColor;
+  letter-spacing: 0.1em;
+  text-align: center;
+  flex-grow: 1;
 }
 
-.toggle-btn:hover {
-  background: #3182ce;
+.vhs-signal-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: "Space Mono", monospace;
+  font-size: 0.7rem;
+  color: var(--vhs-neon-green);
+  text-shadow: 0 0 5px currentColor;
 }
 
-.preview-content {
-  padding: 2rem;
-  min-height: 200px;
+.vhs-signal-light {
+  width: 12px;
+  height: 12px;
+  background: var(--vhs-neon-green);
+  border-radius: 50%;
+  box-shadow: 0 0 15px var(--vhs-neon-green);
+  animation: vhs-signal-pulse 2s ease-in-out infinite;
 }
 
-.error-message {
-  color: #e53e3e;
-  background: #fed7d7;
+/* Screen Container */
+.vhs-screen-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  position: relative;
+  z-index: 10;
+}
+
+.vhs-screen-bezel {
+  background: #000;
+  border: 3px solid #444;
+  border-radius: 12px;
   padding: 1rem;
-  border-radius: 8px;
-  border: 1px solid #feb2b2;
+  position: relative;
+  overflow: hidden;
+  min-height: 400px;
 }
 
-.code-display {
-  margin-bottom: 1.5rem;
-  border-radius: 8px;
-  overflow-x: auto;
+.vhs-screen-bezel::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background:
+    radial-gradient(
+      ellipse at center,
+      transparent 70%,
+      rgba(0, 255, 255, 0.1) 100%
+    ),
+    var(--vhs-scan-lines);
+  border-radius: 9px;
+  pointer-events: none;
+  z-index: 1;
 }
 
-.code-display :deep(pre) {
-  margin: 0;
-  padding: 1.5rem;
-  white-space: pre-wrap;
-  word-wrap: break-word;
-  border-radius: 8px;
+.vhs-screen-bezel::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    var(--vhs-cyan) 50%,
+    transparent 100%
+  );
+  animation: vhs-screen-scan 4s ease-in-out infinite;
+  z-index: 2;
+  opacity: 0.6;
 }
 
-.code-display :deep(code) {
-  font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
-  font-size: 1.1rem;
-  line-height: 1.5;
+/* Control Bar */
+.vhs-control-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background: linear-gradient(90deg, #222 0%, #444 50%, #222 100%);
+  border: 2px solid var(--vhs-pink);
+  border-radius: 8px;
+  position: relative;
+  z-index: 10;
+}
+
+.vhs-decorative-panel {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+/* Shared sticker styling */
+.vhs-warning-label,
+.vhs-serial-label,
+.vhs-inspection-label {
+  font-family: "Space Mono", monospace;
+  font-size: 0.55rem;
+  font-weight: 900;
+  padding: 0.2rem 0.4rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  border-radius: 2px;
+  border: 2px solid;
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  position: relative;
+  opacity: 0.7;
+}
+
+.vhs-warning-label {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 0, 0, 0.8) 0%,
+    rgba(255, 100, 100, 0.8) 100%
+  );
+  border-color: rgba(200, 0, 0, 0.6);
+  color: rgba(255, 255, 255, 0.95);
+  transform: rotate(-2deg);
+}
+
+.vhs-serial-label {
+  background: linear-gradient(
+    135deg,
+    rgba(200, 200, 200, 0.8) 0%,
+    rgba(240, 240, 240, 0.8) 100%
+  );
+  border-color: rgba(150, 150, 150, 0.6);
+  color: rgba(0, 0, 0, 0.9);
+  transform: rotate(1deg);
+}
+
+.vhs-inspection-label {
+  background: linear-gradient(
+    135deg,
+    rgba(0, 150, 0, 0.8) 0%,
+    rgba(100, 255, 100, 0.8) 100%
+  );
+  border-color: rgba(0, 100, 0, 0.6);
+  color: rgba(255, 255, 255, 0.95);
+  transform: rotate(-0.5deg);
+}
+
+.vhs-tape-counter {
+  display: flex;
+  gap: 0.125rem;
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 0, 0.7) 0%,
+    rgba(20, 20, 20, 0.7) 100%
+  );
+  border: 2px solid rgba(0, 255, 255, 0.5);
+  border-radius: 2px;
+  padding: 0.2rem 0.4rem;
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(0, 255, 255, 0.2);
+  transform: rotate(0.5deg);
+  opacity: 0.7;
+}
+
+.vhs-counter-digit {
+  font-family: "Space Mono", monospace;
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: rgba(0, 255, 255, 0.9);
+  text-shadow: 0 0 3px rgba(0, 255, 255, 0.5);
+  min-width: 0.6rem;
+  text-align: center;
+}
+
+.vhs-mode-indicator {
+  background: linear-gradient(
+    135deg,
+    rgba(0, 0, 150, 0.8) 0%,
+    rgba(100, 100, 255, 0.8) 100%
+  );
+  border: 2px solid rgba(0, 0, 100, 0.6);
+  border-radius: 2px;
+  color: rgba(255, 255, 255, 0.95);
+  font-family: "Space Mono", monospace;
+  font-size: 0.55rem;
+  font-weight: 900;
+  padding: 0.2rem 0.4rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  transform: rotate(1.5deg);
+  opacity: 0.7;
+}
+
+.vhs-tracking-control {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  font-family: "Space Mono", monospace;
+  font-size: 0.8rem;
+  color: rgba(255, 140, 0, 0.6);
+  text-shadow: 0 0 5px rgba(255, 140, 0, 0.3);
+  opacity: 0.7;
+}
+
+.vhs-tracking-slider {
+  width: 100px;
+  height: 6px;
+  background: #222;
+  border: 1px solid var(--vhs-orange);
+  border-radius: 3px;
+  position: relative;
+  overflow: hidden;
+}
+
+.vhs-tracking-indicator {
+  width: 20px;
+  height: 4px;
+  background: var(--vhs-orange);
+  border-radius: 2px;
+  position: absolute;
+  top: 50%;
+  left: 40%;
+  transform: translateY(-50%);
+  box-shadow: 0 0 8px var(--vhs-orange);
+  animation: vhs-tracking-drift 6s ease-in-out infinite;
+}
+
+/* Animations */
+@keyframes vhs-signal-pulse {
+  0%,
+  100% {
+    opacity: 1;
+    box-shadow: 0 0 15px var(--vhs-neon-green);
+  }
+  50% {
+    opacity: 0.7;
+    box-shadow: 0 0 25px var(--vhs-neon-green);
+  }
+}
+
+@keyframes vhs-screen-scan {
+  0%,
+  100% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  10% {
+    opacity: 0.6;
+  }
+  90% {
+    transform: translateY(400px);
+    opacity: 0.6;
+  }
+  100% {
+    transform: translateY(400px);
+    opacity: 0;
+  }
+}
+
+@keyframes vhs-tracking-drift {
+  0%,
+  100% {
+    left: 40%;
+  }
+  25% {
+    left: 35%;
+  }
+  50% {
+    left: 45%;
+  }
+  75% {
+    left: 38%;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .vhs-monitor-container {
+    padding: 1rem;
+  }
+
+  .vhs-monitor-header {
+    flex-direction: column;
+    gap: 0.75rem;
+    text-align: center;
+  }
+
+  .vhs-screen-container {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+
+  .vhs-screen-bezel {
+    min-height: 300px;
+  }
+
+  .vhs-control-bar {
+    flex-direction: column;
+    gap: 1rem;
+  }
+
+  .vhs-tracking-control {
+    justify-content: center;
+  }
+}
+
+/* Channel Labels Animation */
+.vhs-channel-label {
+  animation: vhs-channel-flicker 4s ease-in-out infinite;
+}
+
+.vhs-channel-label:nth-child(1) {
+  animation-delay: 0s;
+}
+
+.vhs-channel-label:nth-child(3) {
+  animation-delay: 2s;
+}
+
+@keyframes vhs-channel-flicker {
+  0%,
+  90%,
+  100% {
+    opacity: 1;
+  }
+  95% {
+    opacity: 0.7;
+  }
 }
 </style>

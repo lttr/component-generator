@@ -1,24 +1,58 @@
 <template>
-  <div class="form-container">
-    <div class="form-group">
-      <label for="description">Component Description</label>
+  <div class="vhs-form-container">
+    <!-- VHS Control Panel Header -->
+    <div class="vhs-control-header">
+      <div class="vhs-control-labels">
+        <span class="vhs-control-label">REC</span>
+        <span class="vhs-control-label active">INPUT</span>
+        <span class="vhs-control-label">PLAY</span>
+      </div>
+      <div class="vhs-timecode" :class="{ active: loading }">
+        {{ loading ? formatTimecode(elapsedTime) : "00:00:00" }}
+      </div>
+    </div>
+
+    <!-- Terminal Input Area -->
+    <div class="vhs-terminal-group">
+      <label for="description" class="vhs-terminal-label">
+        COMPONENT.PROMPT > _
+      </label>
       <textarea
         id="description"
         v-model="description"
         :disabled="loading"
-        placeholder="A card component with heading, subheading, text, date and link to read more"
-        class="description-input"
+        placeholder="ENTER COMPONENT SPECIFICATION..."
+        class="vhs-terminal-input"
+        :class="{ 'vhs-glitch': loading }"
         rows="4"
-      >
-      </textarea>
+        @focus="startGlitch"
+        @blur="stopGlitch"
+      ></textarea>
     </div>
-    <button
-      :disabled="loading || !description.trim()"
-      class="generate-btn"
-      @click="generate"
-    >
-      {{ loading ? "Generating..." : "Generate Component" }}
-    </button>
+
+    <!-- VHS Play Button -->
+    <div class="vhs-button-area">
+      <button
+        :disabled="loading || !description.trim()"
+        class="vhs-play-button"
+        :class="{ loading: loading }"
+        @click="generate"
+      >
+        <div class="vhs-button-icon">
+          <div class="vhs-play-icon">▶</div>
+        </div>
+        <div class="vhs-button-text">
+          {{ loading ? "PROCESSING" : "EXECUTE" }}
+        </div>
+      </button>
+    </div>
+
+    <!-- VHS Status Indicators -->
+    <div class="vhs-status-bar">
+      <div class="vhs-status-light" :class="{ active: !loading }">READY</div>
+      <div class="vhs-status-light" :class="{ active: loading }">BUSY</div>
+      <div class="vhs-status-light">CLAUDE-AI</div>
+    </div>
   </div>
 </template>
 
@@ -27,79 +61,431 @@ interface Props {
   loading?: boolean
 }
 
-defineProps<Props>()
-
 const emit = defineEmits<{
   generate: [description: string]
 }>()
 
 const initialText =
   "A card component with heading, subheading, text, date and link to read more"
-const description = ref<string>(initialText)
+const description = useState<string>("generator-description", () => initialText)
+const elapsedTime = ref(0)
+const timerInterval = ref<NodeJS.Timeout | null>(null)
+const glitchActive = ref(false)
+
+const formatTimecode = (seconds: number) => {
+  const mins = Math.floor(seconds / 60)
+  const secs = seconds % 60
+  return `00:${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`
+}
+
+const startTimer = () => {
+  elapsedTime.value = 0
+  timerInterval.value = setInterval(() => {
+    elapsedTime.value++
+  }, 1000)
+}
+
+const stopTimer = () => {
+  if (timerInterval.value) {
+    clearInterval(timerInterval.value)
+    timerInterval.value = null
+  }
+}
+
+const startGlitch = () => {
+  glitchActive.value = true
+}
+
+const stopGlitch = () => {
+  glitchActive.value = false
+}
 
 const generate = () => {
   if (description.value.trim()) {
+    startTimer()
     emit("generate", description.value.trim())
   }
 }
+
+const props = defineProps<Props>()
+
+// Watch for loading state changes to stop timer
+watch(
+  () => props.loading,
+  (newLoading) => {
+    if (!newLoading) {
+      stopTimer()
+    }
+  },
+)
+
+onUnmounted(() => {
+  stopTimer()
+})
 </script>
 
 <style scoped>
-.form-container {
-  background: #f7fafc;
-  padding: 2rem;
+.vhs-form-container {
+  background: linear-gradient(
+    135deg,
+    rgba(42, 42, 42, 0.95) 0%,
+    rgba(0, 0, 0, 0.95) 100%
+  );
+  border: 3px solid var(--vhs-cyan);
   border-radius: 12px;
+  padding: 2rem;
   margin-bottom: 2rem;
-  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.07);
+  position: relative;
+  backdrop-filter: blur(10px);
+  box-shadow:
+    0 8px 32px rgba(0, 255, 255, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.1);
 }
 
-.form-group {
+.vhs-form-container::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--vhs-scan-lines);
+  border-radius: 9px;
+  pointer-events: none;
+  opacity: 0.3;
+}
+
+/* Control Header */
+.vhs-control-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--vhs-cyan);
+}
+
+.vhs-control-labels {
+  display: flex;
+  gap: 1rem;
+}
+
+.vhs-control-label {
+  background: rgba(0, 0, 0, 0.8);
+  color: var(--vhs-orange);
+  border: 1px solid var(--vhs-orange);
+  padding: 0.25rem 0.5rem;
+  font-family: "Space Mono", monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  opacity: 0.5;
+  transition: all 0.3s ease;
+}
+
+.vhs-control-label.active {
+  opacity: 1;
+  box-shadow: 0 0 10px var(--vhs-orange);
+  animation: vhs-pulse 2s ease-in-out infinite;
+}
+
+.vhs-timecode {
+  font-family: "Space Mono", monospace;
+  color: var(--vhs-cyan);
+  font-size: 1.2rem;
+  font-weight: 700;
+  text-shadow: 0 0 5px currentColor;
+  opacity: 0.7;
+}
+
+.vhs-timecode.active {
+  opacity: 1;
+  animation: vhs-blink 1s linear infinite;
+}
+
+/* Terminal Input */
+.vhs-terminal-group {
+  margin-bottom: 2rem;
+}
+
+.vhs-terminal-label {
+  display: block;
+  color: var(--vhs-cyan);
+  font-family: "Space Mono", monospace;
+  font-size: 0.9rem;
+  margin-bottom: 0.5rem;
+  text-shadow: 0 0 5px currentColor;
+  animation: vhs-cursor-blink 1.5s linear infinite;
+}
+
+.vhs-terminal-input {
+  width: 100%;
+  background: rgba(0, 0, 0, 0.9);
+  border: 2px solid var(--vhs-cyan);
+  border-radius: 6px;
+  color: var(--vhs-cyan);
+  font-family: "Space Mono", monospace;
+  font-size: 1rem;
+  padding: 1rem;
+  resize: vertical;
+  transition: all 0.3s ease;
+  text-shadow: 0 0 3px currentColor;
+}
+
+.vhs-terminal-input::placeholder {
+  color: rgba(0, 255, 255, 0.5);
+  font-style: italic;
+}
+
+.vhs-terminal-input:focus {
+  outline: none;
+  box-shadow:
+    0 0 0 3px rgba(0, 255, 255, 0.3),
+    0 0 15px var(--vhs-cyan);
+  border-color: var(--vhs-pink);
+}
+
+.vhs-terminal-input:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+.vhs-terminal-input.vhs-glitch {
+  animation: vhs-terminal-glitch 0.5s linear infinite;
+}
+
+/* VHS Play Button */
+.vhs-button-area {
+  display: flex;
+  justify-content: center;
   margin-bottom: 1.5rem;
 }
 
-.description-input {
-  width: 100%;
-  padding: 1rem;
-  border: 2px solid #e2e8f0;
+.vhs-play-button {
+  background: linear-gradient(135deg, #1a1a1a 0%, #333 50%, #1a1a1a 100%);
+  border: 3px solid var(--vhs-cyan);
   border-radius: 8px;
-  font-size: 1rem;
-  font-family: inherit;
-  resize: vertical;
-  transition: border-color 0.2s ease;
-}
-
-.description-input:focus {
-  outline: none;
-  border-color: #4299e1;
-  box-shadow: 0 0 0 3px rgba(66, 153, 225, 0.1);
-}
-
-.description-input:disabled {
-  background-color: #f7fafc;
-  cursor: not-allowed;
-}
-
-.generate-btn {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-  color: white;
-  border: none;
+  color: var(--vhs-cyan);
+  font-family: "Orbitron", monospace;
+  font-weight: 700;
   padding: 1rem 2rem;
-  border-radius: 8px;
-  font-size: 1.1rem;
-  font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  position: relative;
+  overflow: hidden;
+  min-width: 200px;
+  min-height: 60px;
+  justify-content: center;
+  text-shadow: 0 0 10px currentColor;
 }
 
-.generate-btn:hover:not(:disabled) {
+.vhs-play-button::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    transparent 100%
+  );
+  transition: left 0.5s ease;
+}
+
+.vhs-play-button:hover:not(:disabled)::before {
+  left: 100%;
+}
+
+.vhs-play-button:hover:not(:disabled) {
   transform: translateY(-2px);
-  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+  box-shadow:
+    0 0 25px var(--vhs-cyan),
+    0 8px 25px rgba(0, 255, 255, 0.4);
+  border-color: var(--vhs-pink);
+  color: var(--vhs-pink);
 }
 
-.generate-btn:disabled {
-  opacity: 0.6;
+.vhs-play-button:disabled {
+  opacity: 0.7;
   cursor: not-allowed;
   transform: none;
-  box-shadow: none;
+}
+
+.vhs-play-button.loading {
+  background: linear-gradient(
+    45deg,
+    #1a1a1a 0%,
+    var(--vhs-pink) 15%,
+    #1a1a1a 30%,
+    var(--vhs-cyan) 45%,
+    #1a1a1a 60%,
+    var(--vhs-orange) 75%,
+    #1a1a1a 100%
+  );
+  background-size: 400% 400%;
+  animation: vhs-rainbow-shift 2s ease-in-out infinite;
+}
+
+.vhs-button-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 24px;
+  height: 24px;
+}
+
+.vhs-play-icon {
+  font-size: 1.5rem;
+  text-shadow: 0 0 10px currentColor;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.vhs-button-text {
+  font-size: 1rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+
+/* Status Bar */
+.vhs-status-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-top: 1rem;
+  border-top: 1px solid rgba(0, 255, 255, 0.3);
+}
+
+.vhs-status-light {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-family: "Space Mono", monospace;
+  font-size: 0.8rem;
+  color: var(--vhs-text-cream);
+  opacity: 0.5;
+  transition: all 0.3s ease;
+}
+
+.vhs-status-light::before {
+  content: "";
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: currentColor;
+  box-shadow: 0 0 5px currentColor;
+}
+
+.vhs-status-light.active {
+  color: var(--vhs-neon-green);
+  opacity: 1;
+  animation: vhs-status-pulse 2s ease-in-out infinite;
+}
+
+/* Animations */
+@keyframes vhs-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+@keyframes vhs-blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  51%,
+  100% {
+    opacity: 0.3;
+  }
+}
+
+@keyframes vhs-cursor-blink {
+  0%,
+  50% {
+    opacity: 1;
+  }
+  51%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes vhs-terminal-glitch {
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20% {
+    transform: translateX(-1px);
+  }
+  40% {
+    transform: translateX(1px);
+  }
+  60% {
+    transform: translateX(-1px);
+  }
+  80% {
+    transform: translateX(1px);
+  }
+}
+
+@keyframes vhs-rainbow-shift {
+  0% {
+    background-position: 0% 50%;
+  }
+  25% {
+    background-position: 100% 0%;
+  }
+  50% {
+    background-position: 200% 50%;
+  }
+  75% {
+    background-position: 300% 100%;
+  }
+  100% {
+    background-position: 400% 50%;
+  }
+}
+
+@keyframes vhs-status-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.7;
+  }
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .vhs-form-container {
+    padding: 1.5rem;
+  }
+
+  .vhs-control-header {
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .vhs-play-button {
+    min-width: auto;
+    width: 100%;
+  }
 }
 </style>
