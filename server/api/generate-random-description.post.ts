@@ -1,4 +1,4 @@
-export default defineEventHandler(async (event) => {
+export default defineEventHandler(async (_event) => {
   try {
     const prompt = `Generate a random, simple web component description in 1-3 sentences. 
     

@@ -13,8 +13,8 @@
           :tabindex="activeTab === 'empty' ? 0 : -1"
           class="vhs-control-tab"
           :class="{ active: activeTab === 'empty' }"
-          @click="setActiveTab('empty')"
           :disabled="loading"
+          @click="setActiveTab('empty')"
         >
           EMPTY
         </button>
@@ -24,8 +24,8 @@
           :tabindex="activeTab === 'example' ? 0 : -1"
           class="vhs-control-tab"
           :class="{ active: activeTab === 'example' }"
-          @click="setActiveTab('example')"
           :disabled="loading"
+          @click="setActiveTab('example')"
         >
           EXAMPLE
         </button>
@@ -35,8 +35,8 @@
           :tabindex="activeTab === 'random' ? 0 : -1"
           class="vhs-control-tab"
           :class="{ active: activeTab === 'random', loading: loadingRandom }"
-          @click="setActiveTab('random')"
           :disabled="loading || loadingRandom"
+          @click="setActiveTab('random')"
         >
           {{ loadingRandom ? "GENERATING..." : "RANDOM" }}
         </button>
@@ -149,7 +149,9 @@ const stopGlitch = () => {
 
 const setActiveTab = async (tab: "empty" | "example" | "random") => {
   console.log("Tab clicked:", tab, "loading:", props.loading)
-  if (props.loading) return
+  if (props.loading) {
+    return
+  }
 
   activeTab.value = tab
 

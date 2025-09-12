@@ -10,7 +10,7 @@ This is a **Component Generator** application built with Nuxt 4 that allows user
 
 ### Development
 
-- `pnpm dev` - Start development server on http://localhost:3000
+- do not start the dev server, it is already running in the background
 - `pnpm build` - Build for production
 - `pnpm preview` - Preview production build locally
 
@@ -86,4 +86,3 @@ The server endpoint:
 - TypeScript enabled with strict type checking
 - ESLint + Prettier for code formatting
 - Always verify code after changes with `npm run verify` command.
-- do not start the dev server it is already running
