@@ -47,21 +47,32 @@ const loading = ref<boolean>(false)
 const handleGenerate = async (description: string) => {
   loading.value = true
   try {
-    // Call both APIs in parallel
+    // First generate semantic HTML
+    const htmlResponse = await $fetch<{
+      success: boolean
+      data: { html: string }
+    }>("/api/generate-html", {
+      method: "POST",
+      body: { description },
+    })
+
+    const semanticHtml = htmlResponse.data.html
+
+    // Then apply styling to the HTML in parallel
     const [tailwindResponse, puleoResponse] = await Promise.all([
       $fetch<{
         success: boolean
         data: { component: string }
-      }>("/api/generate-component", {
+      }>("/api/generate-component-tailwind", {
         method: "POST",
-        body: { description },
+        body: { description, html: semanticHtml },
       }),
       $fetch<{
         success: boolean
         data: { component: string }
       }>("/api/generate-component-puleo", {
         method: "POST",
-        body: { description },
+        body: { description, html: semanticHtml },
       }),
     ])
 
