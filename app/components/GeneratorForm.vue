@@ -2,10 +2,44 @@
   <div class="vhs-form-container">
     <!-- VHS Control Panel Header -->
     <div class="vhs-control-header">
-      <div class="vhs-control-labels">
-        <span class="vhs-control-label">REC</span>
-        <span class="vhs-control-label active">INPUT</span>
-        <span class="vhs-control-label">PLAY</span>
+      <div
+        class="vhs-control-tabs"
+        role="tablist"
+        aria-label="Input mode selector"
+      >
+        <button
+          role="tab"
+          :aria-selected="activeTab === 'empty'"
+          :tabindex="activeTab === 'empty' ? 0 : -1"
+          class="vhs-control-tab"
+          :class="{ active: activeTab === 'empty' }"
+          @click="setActiveTab('empty')"
+          :disabled="loading"
+        >
+          EMPTY
+        </button>
+        <button
+          role="tab"
+          :aria-selected="activeTab === 'example'"
+          :tabindex="activeTab === 'example' ? 0 : -1"
+          class="vhs-control-tab"
+          :class="{ active: activeTab === 'example' }"
+          @click="setActiveTab('example')"
+          :disabled="loading"
+        >
+          EXAMPLE
+        </button>
+        <button
+          role="tab"
+          :aria-selected="activeTab === 'random'"
+          :tabindex="activeTab === 'random' ? 0 : -1"
+          class="vhs-control-tab"
+          :class="{ active: activeTab === 'random', loading: loadingRandom }"
+          @click="setActiveTab('random')"
+          :disabled="loading || loadingRandom"
+        >
+          {{ loadingRandom ? "GENERATING..." : "RANDOM" }}
+        </button>
       </div>
       <div class="vhs-timecode" :class="{ active: loading }">
         {{ loading ? formatTimecode(elapsedTime) : "00:00:00" }}
@@ -13,7 +47,11 @@
     </div>
 
     <!-- Terminal Input Area -->
-    <div class="vhs-terminal-group">
+    <div
+      class="vhs-terminal-group"
+      role="tabpanel"
+      aria-labelledby="active-tab"
+    >
       <label for="description" class="vhs-terminal-label">
         COMPONENT.PROMPT > _
       </label>
@@ -71,6 +109,8 @@ const description = useState<string>("generator-description", () => initialText)
 const elapsedTime = ref(0)
 const timerInterval = ref<NodeJS.Timeout | null>(null)
 const glitchActive = ref(false)
+const activeTab = ref<"empty" | "example" | "random">("example")
+const loadingRandom = ref(false)
 
 const formatTimecode = (seconds: number) => {
   const mins = Math.floor(seconds / 60)
@@ -98,6 +138,42 @@ const startGlitch = () => {
 
 const stopGlitch = () => {
   glitchActive.value = false
+}
+
+const setActiveTab = async (tab: "empty" | "example" | "random") => {
+  console.log("Tab clicked:", tab, "loading:", loading.value)
+  if (loading.value) return
+
+  activeTab.value = tab
+
+  switch (tab) {
+    case "empty":
+      description.value = ""
+      break
+    case "example":
+      description.value = initialText
+      break
+    case "random":
+      if (!loadingRandom.value) {
+        loadingRandom.value = true
+        try {
+          const response = await $fetch<{
+            success: boolean
+            data: { description: string }
+          }>("/api/generate-random-description", {
+            method: "POST",
+          })
+          description.value = response.data.description
+        } catch (error) {
+          console.error("Failed to generate random description:", error)
+          // Fallback to example text
+          description.value = initialText
+        } finally {
+          loadingRandom.value = false
+        }
+      }
+      break
+  }
 }
 
 const generate = () => {
@@ -165,12 +241,14 @@ onUnmounted(() => {
   border-bottom: 1px solid var(--vhs-cyan);
 }
 
-.vhs-control-labels {
+.vhs-control-tabs {
   display: flex;
   gap: 1rem;
+  position: relative;
+  z-index: 1001;
 }
 
-.vhs-control-label {
+.vhs-control-tab {
   background: rgba(0, 0, 0, 0.8);
   color: var(--vhs-orange);
   border: 1px solid var(--vhs-orange);
@@ -182,12 +260,46 @@ onUnmounted(() => {
   letter-spacing: 0.05em;
   opacity: 0.5;
   transition: all 0.3s ease;
+  cursor: pointer;
+  border-radius: 4px;
 }
 
-.vhs-control-label.active {
+.vhs-control-tab:hover:not(:disabled) {
+  opacity: 0.8;
+  box-shadow: 0 0 5px var(--vhs-orange);
+}
+
+.vhs-control-tab.active {
   opacity: 1;
   box-shadow: 0 0 10px var(--vhs-orange);
   animation: vhs-pulse 2s ease-in-out infinite;
+}
+
+.vhs-control-tab:disabled {
+  cursor: not-allowed;
+  opacity: 0.3;
+}
+
+.vhs-control-tab.loading {
+  background: linear-gradient(
+    90deg,
+    rgba(0, 0, 0, 0.8) 0%,
+    var(--vhs-orange) 25%,
+    rgba(0, 0, 0, 0.8) 50%,
+    var(--vhs-orange) 75%,
+    rgba(0, 0, 0, 0.8) 100%
+  );
+  background-size: 200% 100%;
+  animation: vhs-tab-shimmer 1.5s linear infinite;
+}
+
+@keyframes vhs-tab-shimmer {
+  0% {
+    background-position: 0% center;
+  }
+  100% {
+    background-position: 200% center;
+  }
 }
 
 .vhs-timecode {
@@ -329,8 +441,8 @@ onUnmounted(() => {
     var(--vhs-orange) 75%,
     #1a1a1a 100%
   );
-  background-size: 400% 400%;
-  animation: vhs-rainbow-shift 2s ease-in-out infinite;
+  background-size: 300% 100%;
+  animation: vhs-rainbow-shift 4s linear infinite;
 }
 
 .vhs-button-icon {
@@ -445,19 +557,10 @@ onUnmounted(() => {
 
 @keyframes vhs-rainbow-shift {
   0% {
-    background-position: 0% 50%;
-  }
-  25% {
-    background-position: 100% 0%;
-  }
-  50% {
-    background-position: 200% 50%;
-  }
-  75% {
-    background-position: 300% 100%;
+    background-position: -100% center;
   }
   100% {
-    background-position: 400% 50%;
+    background-position: 100% center;
   }
 }
 
