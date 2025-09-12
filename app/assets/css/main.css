@@ -353,6 +353,16 @@ body::after {
   animation-play-state: running !important;
 }
 
+/* Keep button animation running when loading */
+.stop-animations .loading {
+  animation-play-state: running !important;
+}
+
+/* Keep tab animation running when loading */
+.stop-animations .vhs-control-tab.loading {
+  animation-play-state: running !important;
+}
+
 /* Responsive utilities */
 @media (max-width: 768px) {
   .vhs-button {
