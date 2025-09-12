@@ -103,6 +103,10 @@ const renderComponent = async (code: string) => {
     // Create and append the component
     const componentElement = document.createElement(componentName)
     container.value.appendChild(componentElement)
+
+    // Scroll container to top after component loads
+    await nextTick()
+    container.value.scrollTop = 0
   } catch (e: unknown) {
     error.value = e instanceof Error ? e.message : "Unknown error"
     if (container.value) {

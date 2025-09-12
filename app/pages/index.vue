@@ -67,6 +67,17 @@ const handleGenerate = async (description: string) => {
 
     tailwindComponent.value = tailwindResponse.data.component
     puleoComponent.value = puleoResponse.data.component
+
+    // Scroll to Claude Vision dual-sync after processing
+    nextTick(() => {
+      const claudeVision = document.querySelector(".vhs-monitor-container")
+      if (claudeVision) {
+        claudeVision.scrollIntoView({
+          behavior: "smooth",
+          block: "start",
+        })
+      }
+    })
   } catch (error) {
     console.error("Failed to generate component:", error)
   } finally {
