@@ -87,9 +87,16 @@
 
     <!-- VHS Status Indicators -->
     <div class="vhs-status-bar">
-      <div class="vhs-status-light" :class="{ active: !loading }">READY</div>
+      <div
+        class="vhs-status-light"
+        :class="{ active: !loading && !loadingRandom }"
+      >
+        READY
+      </div>
       <div class="vhs-status-light" :class="{ active: loading }">BUSY</div>
-      <div class="vhs-status-light">CLAUDE-AI</div>
+      <div class="vhs-status-light" :class="{ active: loadingRandom }">
+        CLAUDE-AI
+      </div>
     </div>
   </div>
 </template>
