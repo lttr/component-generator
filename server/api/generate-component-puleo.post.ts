@@ -1,6 +1,6 @@
 export default defineEventHandler(async (event) => {
   try {
-    const { description } = await readBody(event)
+    const { description, html } = await readBody(event)
 
     if (!description) {
       throw createError({
@@ -12,7 +12,32 @@ export default defineEventHandler(async (event) => {
     // Get cached Puleo CSS variables
     const puleoVariables = await getPuleoCssVariables()
 
-    const prompt = `Requirements:
+    let prompt: string
+
+    if (html) {
+      // If HTML is provided, add CSS styling without changing structure
+      prompt = `Requirements:
+- Add CSS styling to the provided HTML using Puleo CSS variables
+- DO NOT change the HTML structure, elements, or content - only add CSS styling
+- Use CSS custom properties (CSS variables) from Puleo CSS for ALL styling
+- NO inline styles - all styling must use CSS classes or style blocks
+- Make it responsive and modern-looking using these variables
+- Preserve all existing attributes and accessibility features
+- Include a <style> block with CSS that uses Puleo variables
+- NO JavaScript modifications
+
+Provided HTML:
+${html}
+
+Available Puleo CSS Variables:
+${puleoVariables}
+
+Component Description: ${description}
+
+Return only the complete HTML content with CSS styling using these Puleo variables. No explanations, no markdown formatting, no triple backticks, just the raw HTML with embedded CSS.`
+    } else {
+      // Fallback to original behavior if no HTML provided
+      prompt = `Requirements:
 - Generate ONLY semantic HTML with CSS styling
 - Use CSS custom properties (CSS variables) from Puleo CSS for ALL styling
 - NO inline styles - all styling must use CSS classes or style blocks
@@ -25,9 +50,12 @@ export default defineEventHandler(async (event) => {
 Available Puleo CSS Variables:
 ${puleoVariables}
 
-Return only the complete HTML content with CSS styling using these Puleo variables. No explanations, no markdown formatting, no triple backticks, just the raw HTML with embedded CSS.`
+Component Description: ${description}
 
-    const componentCode = await generateComponent(description, prompt)
+Return only the complete HTML content with CSS styling using these Puleo variables. No explanations, no markdown formatting, no triple backticks, just the raw HTML with embedded CSS.`
+    }
+
+    const componentCode = await callClaude(prompt)
 
     return {
       success: true,
