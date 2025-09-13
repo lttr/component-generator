@@ -47,28 +47,6 @@
         <PuleoRenderer :component-code="puleoCode" />
       </div>
     </div>
-
-    <!-- VHS Control Bar -->
-    <div class="vhs-control-bar">
-      <div class="vhs-decorative-panel">
-        <div class="vhs-warning-label">⚠ WARRANTY VOID IF FUN</div>
-        <div class="vhs-serial-label">S/N: CLAUDE-4</div>
-        <div class="vhs-tape-counter">
-          <span class="vhs-counter-digit">1</span>
-          <span class="vhs-counter-digit">3</span>
-          <span class="vhs-counter-digit">3</span>
-          <span class="vhs-counter-digit">7</span>
-        </div>
-        <div class="vhs-inspection-label">✓ INSPECTED BY #42</div>
-        <div class="vhs-mode-indicator">AI MODE</div>
-      </div>
-      <div class="vhs-tracking-control">
-        <span>TRACKING</span>
-        <div class="vhs-tracking-slider">
-          <div class="vhs-tracking-indicator"></div>
-        </div>
-      </div>
-    </div>
   </div>
 </template>
 

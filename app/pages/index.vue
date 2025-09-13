@@ -45,6 +45,23 @@
         @load-generation="handleLoadGeneration"
       />
     </ClientOnly>
+
+    <!-- Footer with Project Info -->
+    <footer class="vhs-control-bar">
+      <div class="vhs-decorative-panel">
+        <a
+          href="https://github.com/lttr/component-generator"
+          target="_blank"
+          class="vhs-github-label"
+        >
+          📡 GITHUB.COM/LTTR/COMPONENT-GENERATOR
+        </a>
+        <div class="vhs-inspection-label">✓ INSPECTED BY LUKAS TRUMM</div>
+        <div class="vhs-warning-label">
+          ⚠ MIT LICENSE: NO WARRANTY, HAVE FUN!
+        </div>
+      </div>
+    </footer>
   </div>
 </template>
 
@@ -348,6 +365,92 @@ onMounted(() => {
   }
 }
 
+/* Footer Control Bar */
+.vhs-control-bar {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 1rem;
+  margin-top: 2rem;
+  background: linear-gradient(90deg, #222 0%, #444 50%, #222 100%);
+  border: 2px solid var(--vhs-pink);
+  border-radius: 8px;
+  position: relative;
+  z-index: 10;
+}
+
+.vhs-decorative-panel {
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+/* Shared sticker styling */
+.vhs-warning-label,
+.vhs-inspection-label,
+.vhs-github-label {
+  font-family: "Space Mono", monospace;
+  font-size: 0.55rem;
+  font-weight: 900;
+  padding: 0.2rem 0.4rem;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  border-radius: 2px;
+  border: 2px solid;
+  box-shadow:
+    0 2px 4px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+  position: relative;
+  opacity: 0.7;
+  text-decoration: none;
+  display: block;
+}
+
+.vhs-warning-label {
+  background: linear-gradient(
+    135deg,
+    rgba(255, 0, 0, 0.8) 0%,
+    rgba(255, 100, 100, 0.8) 100%
+  );
+  border-color: rgba(200, 0, 0, 0.6);
+  color: rgba(255, 255, 255, 0.95);
+  transform: rotate(-2deg);
+}
+
+.vhs-inspection-label {
+  background: linear-gradient(
+    135deg,
+    rgba(0, 150, 0, 0.8) 0%,
+    rgba(100, 255, 100, 0.8) 100%
+  );
+  border-color: rgba(0, 100, 0, 0.6);
+  color: rgba(255, 255, 255, 0.95);
+  transform: rotate(-0.5deg);
+}
+
+.vhs-github-label {
+  background: linear-gradient(
+    135deg,
+    rgba(0, 100, 200, 0.8) 0%,
+    rgba(100, 150, 255, 0.8) 100%
+  );
+  border-color: rgba(0, 50, 150, 0.6);
+  color: rgba(255, 255, 255, 0.95);
+  transform: rotate(1deg);
+  transition: all 0.2s ease;
+}
+
+.vhs-github-label:hover {
+  opacity: 1;
+  transform: rotate(1deg) scale(1.05);
+  box-shadow:
+    0 4px 8px rgba(0, 0, 0, 0.4),
+    0 0 15px rgba(0, 100, 200, 0.5),
+    inset 0 1px 0 rgba(255, 255, 255, 0.3);
+}
+
 /* Responsive design */
 @media (max-width: 768px) {
   .vhs-cassette-body {
@@ -361,6 +464,16 @@ onMounted(() => {
 
   .vhs-title {
     font-size: 1.8rem;
+  }
+
+  .vhs-control-bar {
+    flex-direction: column;
+    gap: 0.5rem;
+  }
+
+  .vhs-decorative-panel {
+    flex-direction: column;
+    gap: 0.5rem;
   }
 }
 </style>
