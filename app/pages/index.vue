@@ -36,16 +36,34 @@
       :tailwind-code="tailwindComponent"
       :puleo-code="puleoComponent"
     />
+
+    <!-- History Panel -->
+    <ClientOnly>
+      <HistoryPanel
+        :is-recording="loading"
+        :selected-id="selectedRecordId"
+        @load-generation="handleLoadGeneration"
+      />
+    </ClientOnly>
   </div>
 </template>
 
 <script setup lang="ts">
+import {
+  useGenerationHistory,
+  type GenerationRecord,
+} from "~/composables/useGenerationHistory"
+
 const tailwindComponent = ref<string>("")
 const puleoComponent = ref<string>("")
 const loading = ref<boolean>(false)
+const selectedRecordId = ref<string>("")
+
+const { saveGeneration } = useGenerationHistory()
 
 const handleGenerate = async (description: string) => {
   loading.value = true
+  selectedRecordId.value = ""
   try {
     // First generate semantic HTML
     const htmlResponse = await $fetch<{
@@ -79,6 +97,9 @@ const handleGenerate = async (description: string) => {
     tailwindComponent.value = tailwindResponse.data.component
     puleoComponent.value = puleoResponse.data.component
 
+    // Save to history
+    saveGeneration(description, tailwindComponent.value, puleoComponent.value)
+
     // Scroll to Claude Vision dual-sync after processing
     nextTick(() => {
       const claudeVision = document.querySelector(".vhs-monitor-container")
@@ -94,6 +115,23 @@ const handleGenerate = async (description: string) => {
   } finally {
     loading.value = false
   }
+}
+
+const handleLoadGeneration = (record: GenerationRecord) => {
+  tailwindComponent.value = record.tailwindCode
+  puleoComponent.value = record.puleoCode
+  selectedRecordId.value = record.id
+
+  // Scroll to rendered components
+  nextTick(() => {
+    const claudeVision = document.querySelector(".vhs-monitor-container")
+    if (claudeVision) {
+      claudeVision.scrollIntoView({
+        behavior: "smooth",
+        block: "start",
+      })
+    }
+  })
 }
 
 // Stop animations after initial load
