@@ -20,8 +20,8 @@
           </div>
           <button
             class="vhs-clear-button"
-            @click="handleClearHistory"
             :disabled="history.length === 0"
+            @click="handleClearHistory"
           >
             ERASE ALL
           </button>
@@ -35,7 +35,7 @@
 
         <div v-else class="vhs-history-list">
           <div
-            v-for="record in history"
+            v-for="record of history"
             :key="record.id"
             class="vhs-history-item"
             :class="{ active: selectedId === record.id }"
@@ -56,15 +56,15 @@
             <div class="vhs-record-actions">
               <button
                 class="vhs-play-mini"
-                @click="handleLoadRecord(record)"
                 title="Load generation"
+                @click="handleLoadRecord(record)"
               >
                 <div class="vhs-play-icon-mini"></div>
               </button>
               <button
                 class="vhs-eject-mini"
-                @click="handleDeleteRecord(record.id)"
                 title="Delete record"
+                @click="handleDeleteRecord(record.id)"
               >
                 ⏏
               </button>
@@ -89,7 +89,7 @@ interface Props {
   selectedId?: string
 }
 
-const props = defineProps<Props>()
+defineProps<Props>()
 
 const emit = defineEmits<{
   loadGeneration: [record: GenerationRecord]

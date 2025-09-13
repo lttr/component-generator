@@ -1,4 +1,5 @@
 import { useLocalStorage, StorageSerializers } from "@vueuse/core"
+import { exampleData } from "~/utils/exampleData"
 
 export interface GenerationRecord {
   id: string
@@ -69,30 +70,14 @@ export function useGenerationHistory() {
   const initializeWithExample = async () => {
     // Only initialize if history is empty
     if (history.value.length === 0) {
-      try {
-        const response = await $fetch<{
-          success: boolean
-          data: {
-            description: string
-            tailwindCode: string
-            puleoCode: string
-          }
-        }>("/api/example-data")
-
-        if (response.success) {
-          const exampleRecord: GenerationRecord = {
-            id: "example-card",
-            timestamp: Date.now() - 86400000, // 24 hours ago
-            description: response.data.description,
-            tailwindCode: response.data.tailwindCode,
-            puleoCode: response.data.puleoCode,
-          }
-          history.value.push(exampleRecord)
-        }
-      } catch (error) {
-        console.warn("Failed to load example data:", error)
-        // Continue without example if API fails
+      const exampleRecord: GenerationRecord = {
+        id: "example-card",
+        timestamp: Date.now() - 86400000, // 24 hours ago
+        description: exampleData.description,
+        tailwindCode: exampleData.tailwindCode,
+        puleoCode: exampleData.puleoCode,
       }
+      history.value.push(exampleRecord)
     }
   }
 
