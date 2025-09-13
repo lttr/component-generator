@@ -55,8 +55,8 @@
     45deg,
     transparent,
     transparent 10px,
-    rgba(255, 20, 147, 0.1) 10px,
-    rgba(255, 20, 147, 0.1) 20px
+    rgba(255, 255, 255, 0.05) 10px,
+    rgba(255, 255, 255, 0.05) 20px
   );
 }
 
@@ -70,7 +70,7 @@ html {
 }
 
 body {
-  background: var(--vhs-bg-gradient);
+  background: var(--vhs-diagonal-stripes), var(--vhs-bg-gradient);
   color: var(--vhs-text-cream);
   font-family: "Space Mono", monospace;
   margin: 0;
@@ -94,12 +94,7 @@ body::before {
   opacity: 0.5;
 }
 
-/* Geometric pattern overlay */
-/* Apply diagonal stripes background directly to body */
-body {
-  background: var(--vhs-diagonal-stripes);
-  background-attachment: fixed;
-}
+/* Geometric pattern overlay applied above in body styles */
 
 /* Typography classes */
 .vhs-header {
