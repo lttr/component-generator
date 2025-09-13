@@ -1,3 +1,6 @@
+import { readFile } from "fs/promises"
+import { join } from "path"
+
 export default defineEventHandler(async (event) => {
   try {
     const { description } = await readBody(event)
@@ -8,6 +11,16 @@ export default defineEventHandler(async (event) => {
         statusMessage: "Description is required",
       })
     }
+
+    // Read example files
+    const exampleDescription = await readFile(
+      join(process.cwd(), "server/examples/card-prompt.txt"),
+      "utf-8",
+    )
+    const exampleOutput = await readFile(
+      join(process.cwd(), "server/examples/card.html"),
+      "utf-8",
+    )
 
     const prompt = `Requirements:
 - Generate ONLY semantic HTML without any CSS or JavaScript
@@ -20,25 +33,10 @@ export default defineEventHandler(async (event) => {
 - The HTML should be clean and ready to have CSS styling applied later
 
 <example>
-Input Description: A card component with heading, subheading, text, date and link to read more
+Input Description: ${exampleDescription.trim()}
 
 Expected Output:
-<article href="#">
-  <header>
-    <h2>Yet another generated component thing</h2>
-    <h3>By John Doe</h3>
-  </header>
-
-  <p>
-    Lorem ipsum dolor sit, amet consectetur adipisicing elit. At velit illum
-    provident a, ipsa maiores deleniti consectetur nobis et eaque.
-  </p>
-
-  <foter>
-    <span>31/06/2025</span>
-    <a href="#">Read more</a>
-  </foter>
-</article>
+${exampleOutput.trim()}
 </example>
 
 Component Description: ${description}

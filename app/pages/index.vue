@@ -59,7 +59,7 @@ const puleoComponent = ref<string>("")
 const loading = ref<boolean>(false)
 const selectedRecordId = ref<string>("")
 
-const { saveGeneration } = useGenerationHistory()
+const { saveGeneration, initializeWithExample } = useGenerationHistory()
 
 const handleGenerate = async (description: string) => {
   loading.value = true
@@ -138,8 +138,11 @@ const handleLoadGeneration = (record: GenerationRecord) => {
   })
 }
 
-// Stop animations after initial load
+// Initialize example and stop animations after initial load
 onMounted(() => {
+  // Initialize with example data if history is empty
+  initializeWithExample()
+
   setTimeout(() => {
     document.body.classList.add("stop-animations")
   }, 3000) // Stop animations after 3 seconds

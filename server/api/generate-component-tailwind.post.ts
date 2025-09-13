@@ -1,3 +1,6 @@
+import { readFile } from "fs/promises"
+import { join } from "path"
+
 export default defineEventHandler(async (event) => {
   try {
     const { description, html } = await readBody(event)
@@ -16,6 +19,20 @@ export default defineEventHandler(async (event) => {
       })
     }
 
+    // Read example files
+    const exampleDescription = await readFile(
+      join(process.cwd(), "server/examples/card-prompt.txt"),
+      "utf-8",
+    )
+    const exampleInputHtml = await readFile(
+      join(process.cwd(), "server/examples/card.html"),
+      "utf-8",
+    )
+    const exampleOutput = await readFile(
+      join(process.cwd(), "server/examples/card-tailwind.html"),
+      "utf-8",
+    )
+
     const prompt = `<task>
 Add Tailwind CSS v4 utility classes to the provided HTML.
 </task>
@@ -31,48 +48,13 @@ Add Tailwind CSS v4 utility classes to the provided HTML.
 </requirements>
 
 <example>
-Input Description: A card component with heading, subheading, text, date and link to read more
+Input Description: ${exampleDescription.trim()}
 
 Input HTML:
-<article href="#">
-  <header>
-    <h2>Yet another generated component thing</h2>
-    <h3>By John Doe</h3>
-  </header>
-
-  <p>
-    Lorem ipsum dolor sit, amet consectetur adipisicing elit. At velit illum
-    provident a, ipsa maiores deleniti consectetur nobis et eaque.
-  </p>
-
-  <foter>
-    <span>31/06/2025</span>
-    <a href="#">Read more</a>
-  </foter>
-</article>
+${exampleInputHtml.trim()}
 
 Expected Output:
-<article
-  href="#"
-  class="block max-w-[40ch] rounded-md border border-gray-300 p-4 shadow-sm sm:p-6"
->
-  <header class="mt-4 sm:mt-0">
-    <h2 class="text-lg font-medium text-balance text-gray-900">
-      Yet another generated component thing
-    </h2>
-    <h3 class="mt-1 text-sm text-gray-700">By John Doe</h3>
-  </header>
-
-  <p class="mt-4 text-sm text-pretty text-gray-700">
-    Lorem ipsum dolor sit, amet consectetur adipisicing elit. At velit illum
-    provident a, ipsa maiores deleniti consectetur nobis et eaque.
-  </p>
-
-  <footer class="mt-4 flex items-center justify-between gap-2 text-sm">
-    <span class="text-gray-700">31/06/2025</span>
-    <a href="#" class="underline hover:no-underline">Read more</a>
-  </footer>
-</article>
+${exampleOutput.trim()}
 </example>
 
 <input_html>

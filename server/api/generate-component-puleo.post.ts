@@ -1,3 +1,6 @@
+import { readFile } from "fs/promises"
+import { join } from "path"
+
 export default defineEventHandler(async (event) => {
   try {
     const { description, html } = await readBody(event)
@@ -19,6 +22,20 @@ export default defineEventHandler(async (event) => {
     // Get cached Puleo CSS variables
     const puleoVariables = await getPuleoCssVariables()
 
+    // Read example files
+    const exampleDescription = await readFile(
+      join(process.cwd(), "server/examples/card-prompt.txt"),
+      "utf-8",
+    )
+    const exampleInputHtml = await readFile(
+      join(process.cwd(), "server/examples/card.html"),
+      "utf-8",
+    )
+    const exampleOutput = await readFile(
+      join(process.cwd(), "server/examples/card-puleo.html"),
+      "utf-8",
+    )
+
     const prompt = `<task>
 Add CSS styling to the provided HTML using Puleo CSS framework.
 </task>
@@ -36,68 +53,13 @@ Add CSS styling to the provided HTML using Puleo CSS framework.
 </requirements>
 
 <example>
-Input Description: A card component with heading, subheading, text, date and link to read more
+Input Description: ${exampleDescription.trim()}
 
 Input HTML:
-<article href="#">
-  <header>
-    <h2>Yet another generated component thing</h2>
-    <h3>By John Doe</h3>
-  </header>
-
-  <p>
-    Lorem ipsum dolor sit, amet consectetur adipisicing elit. At velit illum
-    provident a, ipsa maiores deleniti consectetur nobis et eaque.
-  </p>
-
-  <foter>
-    <span>31/06/2025</span>
-    <a href="#">Read more</a>
-  </foter>
-</article>
+${exampleInputHtml.trim()}
 
 Expected Output:
-<style>
-  .card {
-    max-width: 40ch;
-    border: var(--border-2);
-    border-radius: var(--radius-2);
-    padding: var(--space-4);
-    box-shadow: var(--shadow-3);
-  }
-
-  .content {
-    margin-top: var(--space-2);
-  }
-
-  .subheading {
-    font-size: var(--font-size--1);
-    color: var(--text-color-2);
-  }
-
-  .footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-  }
-</style>
-
-<article href="#" class="card p-stack">
-  <header class="content p-flow">
-    <h2 class="p-heading-4">Yet another generated component thing</h2>
-    <h3 class="subheading">By John Doe</h3>
-  </header>
-
-  <p>
-    Lorem ipsum dolor sit, amet consectetur adipisicing elit. At velit illum
-    provident a, ipsa maiores deleniti consectetur nobis et eaque.
-  </p>
-
-  <foter class="footer">
-    <span class="">31/06/2025</span>
-    <a href="#" class="">Read more</a>
-  </foter>
-</article>
+${exampleOutput.trim()}
 </example>
 
 <input_html>
