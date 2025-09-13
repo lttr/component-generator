@@ -33,9 +33,9 @@ export default defineEventHandler(async (event) => {
       "utf-8",
     )
 
-    const prompt = `<task>
+    const prompt = `<objective>
 Add Tailwind CSS v4 utility classes to the provided HTML.
-</task>
+</objective>
 
 <requirements>
 - Add ONLY Tailwind CSS v4 utility classes to the provided HTML
@@ -57,17 +57,14 @@ Expected Output:
 ${exampleOutput.trim()}
 </example>
 
-<input_html>
-${html}
-</input_html>
+<input>
+HTML: ${html}
+Description: ${description}
+</input>
 
-<description>
-${description}
-</description>
-
-<output_format>
+<output>
 Return only the HTML content with Tailwind classes added. No explanations, no markdown formatting, no triple backticks, no <script> tags, just the raw HTML with Tailwind classes.
-</output_format>`
+</output>`
 
     const componentCode = await callClaude(prompt)
 

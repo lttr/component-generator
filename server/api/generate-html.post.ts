@@ -22,7 +22,11 @@ export default defineEventHandler(async (event) => {
       "utf-8",
     )
 
-    const prompt = `Requirements:
+    const prompt = `<objective>
+Generate semantic HTML without CSS or JavaScript for the provided component description.
+</objective>
+
+<requirements>
 - Generate ONLY semantic HTML without any CSS or JavaScript
 - Focus on semantically correct HTML5 elements and proper structure
 - Use appropriate accessibility attributes (ARIA labels, roles, alt text, etc.)
@@ -31,6 +35,7 @@ export default defineEventHandler(async (event) => {
 - Use meaningful HTML elements (header, nav, main, section, article, aside, footer, etc.)
 - Ensure all interactive elements have proper accessibility attributes
 - The HTML should be clean and ready to have CSS styling applied later
+</requirements>
 
 <example>
 Input Description: ${exampleDescription.trim()}
@@ -39,9 +44,13 @@ Expected Output:
 ${exampleOutput.trim()}
 </example>
 
+<input>
 Component Description: ${description}
+</input>
 
-Return only the HTML content. No explanations, no markdown formatting, no triple backticks, just the raw semantic HTML.`
+<output>
+Return only the HTML content. No explanations, no markdown formatting, no triple backticks, just the raw semantic HTML.
+</output>`
 
     const htmlCode = await callClaude(prompt)
 

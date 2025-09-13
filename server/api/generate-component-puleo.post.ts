@@ -36,9 +36,9 @@ export default defineEventHandler(async (event) => {
       "utf-8",
     )
 
-    const prompt = `<task>
+    const prompt = `<objective>
 Add CSS styling to the provided HTML using Puleo CSS framework.
-</task>
+</objective>
 
 <requirements>
 - DO NOT change the HTML structure, elements, or content - only add CSS styling
@@ -62,21 +62,19 @@ Expected Output:
 ${exampleOutput.trim()}
 </example>
 
-<input_html>
-${html}
-</input_html>
-
-<puleo_variables>
+<context>
+Available Puleo Variables:
 ${puleoVariables}
-</puleo_variables>
+</context>
 
-<description>
-${description}
-</description>
+<input>
+HTML: ${html}
+Description: ${description}
+</input>
 
-<output_format>
+<output>
 Return only the complete HTML content with CSS classes on elements and embedded CSS styling. No explanations, no markdown formatting, no triple backticks, just the raw HTML with embedded CSS.
-</output_format>`
+</output>`
 
     const componentCode = await callClaude(prompt)
 
