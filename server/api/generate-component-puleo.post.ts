@@ -9,15 +9,21 @@ export default defineEventHandler(async (event) => {
       })
     }
 
+    if (!html) {
+      throw createError({
+        statusCode: 400,
+        statusMessage: "HTML is required",
+      })
+    }
+
     // Get cached Puleo CSS variables
     const puleoVariables = await getPuleoCssVariables()
 
-    let prompt: string
+    const prompt = `<task>
+Add CSS styling to the provided HTML using Puleo CSS framework.
+</task>
 
-    if (html) {
-      // If HTML is provided, add CSS styling without changing structure
-      prompt = `Requirements:
-- Add CSS styling to the provided HTML using Puleo CSS framework
+<requirements>
 - DO NOT change the HTML structure, elements, or content - only add CSS styling
 - Use CSS custom properties (CSS variables) from Puleo CSS for ALL styling
 - Create semantic CSS classes and apply them to HTML elements
@@ -25,38 +31,25 @@ export default defineEventHandler(async (event) => {
 - Preserve all existing attributes and accessibility features
 - Include a <style> block with CSS that uses Puleo variables with proper fallback values
 - NO JavaScript modifications
+- NO inline SVG elements - use text, emojis, or CSS-based graphics instead
 - DO NOT include CSS framework links - the framework is already loaded
+</requirements>
 
-Provided HTML:
+<input_html>
 ${html}
+</input_html>
 
-Available Puleo CSS Variables:
+<puleo_variables>
 ${puleoVariables}
+</puleo_variables>
 
-Component Description: ${description}
+<description>
+${description}
+</description>
 
-Return only the complete HTML content with CSS classes on elements and embedded CSS styling. No explanations, no markdown formatting, no triple backticks, just the raw HTML with embedded CSS.`
-    } else {
-      // Fallback to original behavior if no HTML provided
-      prompt = `Requirements:
-- Generate ONLY semantic HTML with CSS styling
-- Use CSS custom properties (CSS variables) from Puleo CSS for ALL styling
-- Create semantic CSS classes and apply them to HTML elements
-- NO inline styles - all styling must use CSS classes or style blocks
-- Make it responsive and modern-looking using these variables
-- Use proper HTML structure and accessibility attributes
-- NO JavaScript, NO custom elements, NO Shadow DOM - just plain HTML with CSS
-- Include a <style> block with CSS that uses Puleo variables with proper fallback values
-- DO NOT include CSS framework links - the framework is already loaded
-- The HTML should be ready to be inserted into a web component programmatically
-
-Available Puleo CSS Variables:
-${puleoVariables}
-
-Component Description: ${description}
-
-Return only the complete HTML content with CSS classes on elements and embedded CSS styling. No explanations, no markdown formatting, no triple backticks, just the raw HTML with embedded CSS.`
-    }
+<output_format>
+Return only the complete HTML content with CSS classes on elements and embedded CSS styling. No explanations, no markdown formatting, no triple backticks, just the raw HTML with embedded CSS.
+</output_format>`
 
     const componentCode = await callClaude(prompt)
 
