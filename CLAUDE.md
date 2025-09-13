@@ -10,7 +10,7 @@ This is a **Component Generator** application built with Nuxt 4 that allows user
 
 ### Development
 
-- do not start the dev server, it is already running in the background
+- CRITICAL: DO NOT START the dev server, it is already running in the background on http://localhost:3000
 - `pnpm build` - Build for production
 - `pnpm preview` - Preview production build locally
 
