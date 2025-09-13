@@ -238,12 +238,12 @@ const viewMode = ref<ViewMode>("dual")
 }
 
 .vhs-screen-bezel {
-  background: #000;
-  border: 3px solid #444;
-  border-radius: 12px;
+  background: transparent;
+  border: none;
+  border-radius: 0;
   padding: 0;
   position: relative;
-  overflow: hidden;
+  overflow: visible;
   min-height: 400px;
 }
 

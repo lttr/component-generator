@@ -223,7 +223,7 @@ watch(
   background: #fff;
   position: relative;
   z-index: 10;
-  border-radius: 0 0 9px 9px;
+  border-radius: 0 0 10px 10px;
   overflow: hidden;
   margin: 0;
 }
@@ -233,6 +233,7 @@ watch(
   min-height: 380px;
   width: 100%;
   position: relative;
+  padding: 2rem;
 }
 
 .error-message {
