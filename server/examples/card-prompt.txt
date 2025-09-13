@@ -1,0 +1,1 @@
+A card component with heading, subheading, text, date and link to read more

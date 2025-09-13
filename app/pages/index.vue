@@ -122,6 +122,10 @@ const handleLoadGeneration = (record: GenerationRecord) => {
   puleoComponent.value = record.puleoCode
   selectedRecordId.value = record.id
 
+  // Update the description in the form
+  const description = useState<string>("generator-description")
+  description.value = record.description
+
   // Scroll to rendered components
   nextTick(() => {
     const claudeVision = document.querySelector(".vhs-monitor-container")

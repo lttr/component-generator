@@ -35,6 +35,71 @@ Add CSS styling to the provided HTML using Puleo CSS framework.
 - DO NOT include CSS framework links - the framework is already loaded
 </requirements>
 
+<example>
+Input Description: A card component with heading, subheading, text, date and link to read more
+
+Input HTML:
+<article href="#">
+  <header>
+    <h2>Yet another generated component thing</h2>
+    <h3>By John Doe</h3>
+  </header>
+
+  <p>
+    Lorem ipsum dolor sit, amet consectetur adipisicing elit. At velit illum
+    provident a, ipsa maiores deleniti consectetur nobis et eaque.
+  </p>
+
+  <foter>
+    <span>31/06/2025</span>
+    <a href="#">Read more</a>
+  </foter>
+</article>
+
+Expected Output:
+<style>
+  .card {
+    max-width: 40ch;
+    border: var(--border-2);
+    border-radius: var(--radius-2);
+    padding: var(--space-4);
+    box-shadow: var(--shadow-3);
+  }
+
+  .content {
+    margin-top: var(--space-2);
+  }
+
+  .subheading {
+    font-size: var(--font-size--1);
+    color: var(--text-color-2);
+  }
+
+  .footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+</style>
+
+<article href="#" class="card p-stack">
+  <header class="content p-flow">
+    <h2 class="p-heading-4">Yet another generated component thing</h2>
+    <h3 class="subheading">By John Doe</h3>
+  </header>
+
+  <p>
+    Lorem ipsum dolor sit, amet consectetur adipisicing elit. At velit illum
+    provident a, ipsa maiores deleniti consectetur nobis et eaque.
+  </p>
+
+  <foter class="footer">
+    <span class="">31/06/2025</span>
+    <a href="#" class="">Read more</a>
+  </foter>
+</article>
+</example>
+
 <input_html>
 ${html}
 </input_html>

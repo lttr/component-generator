@@ -19,6 +19,28 @@ export default defineEventHandler(async (event) => {
 - Ensure all interactive elements have proper accessibility attributes
 - The HTML should be clean and ready to have CSS styling applied later
 
+<example>
+Input Description: A card component with heading, subheading, text, date and link to read more
+
+Expected Output:
+<article href="#">
+  <header>
+    <h2>Yet another generated component thing</h2>
+    <h3>By John Doe</h3>
+  </header>
+
+  <p>
+    Lorem ipsum dolor sit, amet consectetur adipisicing elit. At velit illum
+    provident a, ipsa maiores deleniti consectetur nobis et eaque.
+  </p>
+
+  <foter>
+    <span>31/06/2025</span>
+    <a href="#">Read more</a>
+  </foter>
+</article>
+</example>
+
 Component Description: ${description}
 
 Return only the HTML content. No explanations, no markdown formatting, no triple backticks, just the raw semantic HTML.`
