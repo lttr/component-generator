@@ -2,10 +2,28 @@
   <div class="vhs-monitor-container">
     <!-- VHS Monitor Header -->
     <div class="vhs-monitor-header">
-      <div class="vhs-channel-controls">
-        <span class="vhs-channel-label">CH-A</span>
-        <span class="vhs-channel-divider">|</span>
-        <span class="vhs-channel-label">CH-B</span>
+      <div class="vhs-view-switcher">
+        <button
+          class="vhs-view-btn"
+          :class="{ active: viewMode === 'dual' }"
+          @click="viewMode = 'dual'"
+        >
+          DUAL
+        </button>
+        <button
+          class="vhs-view-btn"
+          :class="{ active: viewMode === 'tailwind' }"
+          @click="viewMode = 'tailwind'"
+        >
+          CH-A
+        </button>
+        <button
+          class="vhs-view-btn"
+          :class="{ active: viewMode === 'puleo' }"
+          @click="viewMode = 'puleo'"
+        >
+          CH-B
+        </button>
       </div>
       <div class="vhs-monitor-brand">CLAUDE VISION™ DUAL-SYNC</div>
       <div class="vhs-signal-indicator">
@@ -15,11 +33,17 @@
     </div>
 
     <!-- Dual Monitor Display -->
-    <div class="vhs-screen-container">
-      <div class="vhs-screen-bezel">
+    <div class="vhs-screen-container" :class="viewMode">
+      <div
+        v-if="viewMode === 'dual' || viewMode === 'tailwind'"
+        class="vhs-screen-bezel"
+      >
         <TailwindRenderer :component-code="tailwindCode" />
       </div>
-      <div class="vhs-screen-bezel">
+      <div
+        v-if="viewMode === 'dual' || viewMode === 'puleo'"
+        class="vhs-screen-bezel"
+      >
         <PuleoRenderer :component-code="puleoCode" />
       </div>
     </div>
@@ -55,12 +79,15 @@ interface Props {
 }
 
 defineProps<Props>()
+
+type ViewMode = "dual" | "tailwind" | "puleo"
+const viewMode = ref<ViewMode>("dual")
 </script>
 
 <style scoped>
 .vhs-monitor-container {
   background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
-  border: 4px solid var(--vhs-orange);
+  border: 3px solid var(--vhs-orange);
   border-radius: 16px;
   padding: 1.5rem;
   position: relative;
@@ -98,29 +125,67 @@ defineProps<Props>()
   z-index: 10;
 }
 
-.vhs-channel-controls {
+.vhs-view-switcher {
   display: flex;
   align-items: center;
-  gap: 0.5rem;
+  gap: 0.25rem;
+  background: linear-gradient(90deg, #222 0%, #333 50%, #222 100%);
+  border: 2px solid var(--vhs-cyan);
+  border-radius: 8px;
+  padding: 0.25rem;
+  box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.8);
+}
+
+.vhs-view-btn {
   font-family: "Space Mono", monospace;
   font-weight: 700;
+  font-size: 0.75rem;
   color: var(--vhs-cyan);
-  text-shadow: 0 0 5px currentColor;
-}
-
-.vhs-channel-label {
-  background: rgba(0, 0, 0, 0.8);
+  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
   border: 1px solid var(--vhs-cyan);
-  padding: 0.25rem 0.5rem;
   border-radius: 4px;
-  font-size: 0.8rem;
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
   letter-spacing: 0.05em;
+  text-shadow: 0 0 5px currentColor;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
 }
 
-.vhs-channel-divider {
-  font-size: 1.2rem;
-  margin: 0 0.25rem;
-  opacity: 0.6;
+.vhs-view-btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(0, 255, 255, 0.3) 50%,
+    transparent 100%
+  );
+  transition: left 0.3s ease;
+}
+
+.vhs-view-btn:hover {
+  background: linear-gradient(135deg, #2a2a2a 0%, #3a3a3a 100%);
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+  text-shadow: 0 0 10px currentColor;
+}
+
+.vhs-view-btn:hover::before {
+  left: 100%;
+}
+
+.vhs-view-btn.active {
+  background: linear-gradient(135deg, var(--vhs-cyan) 0%, #4dd2e5 100%);
+  color: #000;
+  text-shadow: 0 0 8px rgba(255, 255, 255, 0.8);
+  box-shadow:
+    0 0 20px var(--vhs-cyan),
+    inset 0 1px 0 rgba(255, 255, 255, 0.5);
 }
 
 .vhs-monitor-brand {
@@ -161,13 +226,22 @@ defineProps<Props>()
   margin-bottom: 1rem;
   position: relative;
   z-index: 10;
+  transition: all 0.3s ease;
+}
+
+.vhs-screen-container.tailwind,
+.vhs-screen-container.puleo {
+  grid-template-columns: 1fr;
+  max-width: 800px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .vhs-screen-bezel {
   background: #000;
   border: 3px solid #444;
   border-radius: 12px;
-  padding: 1rem;
+  padding: 0;
   position: relative;
   overflow: hidden;
   min-height: 400px;

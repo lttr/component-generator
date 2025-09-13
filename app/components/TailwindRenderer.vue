@@ -11,8 +11,10 @@
       Error rendering Tailwind component: {{ error }}
     </div>
 
-    <div v-else ref="container" class="preview-content">
-      <!-- Tailwind component will be inserted here -->
+    <div v-else class="preview-content">
+      <div ref="container" class="component-container">
+        <!-- Tailwind component will be inserted here -->
+      </div>
     </div>
 
     <!-- eslint-disable-next-line vue/no-v-html -->
@@ -131,42 +133,106 @@ watch(
 
 <style scoped>
 .renderer-section {
-  background: white;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 50%, #1a1a1a 100%);
+  border: 2px solid var(--vhs-cyan);
+  border-radius: 12px;
+  overflow: hidden;
+  position: relative;
+}
+
+.renderer-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--vhs-scan-lines);
+  opacity: 0.1;
+  pointer-events: none;
+  z-index: 1;
 }
 
 .section-header {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 1.5rem;
-  background: #f8f9fa;
-  border-bottom: 1px solid #e2e8f0;
+  padding: 1rem 1.5rem;
+  background: linear-gradient(90deg, #333 0%, #555 50%, #333 100%);
+  border-bottom: 2px solid var(--vhs-cyan);
+  position: relative;
+  z-index: 10;
 }
 
 .section-header h3 {
   margin: 0;
-  font-size: 1.25rem;
-  color: #2d3748;
+  font-size: 1.1rem;
+  font-family: "Orbitron", monospace;
+  font-weight: 700;
+  color: var(--vhs-orange);
+  text-shadow: 0 0 8px currentColor;
+  letter-spacing: 0.1em;
 }
 
 .toggle-btn {
-  background: #4299e1;
-  color: white;
-  border: none;
-  padding: 0.5rem 1rem;
-  border-radius: 6px;
+  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+  color: var(--vhs-cyan);
+  border: 1px solid var(--vhs-cyan);
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
   cursor: pointer;
-  font-size: 0.9rem;
-  transition: background-color 0.2s ease;
+  font-size: 0.75rem;
+  font-family: "Space Mono", monospace;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-shadow: 0 0 5px currentColor;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.toggle-btn::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(0, 255, 255, 0.3) 50%,
+    transparent 100%
+  );
+  transition: left 0.3s ease;
 }
 
 .toggle-btn:hover {
-  background: #3182ce;
+  background: linear-gradient(135deg, #2a2a2a 0%, #3a3a3a 100%);
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+  text-shadow: 0 0 10px currentColor;
+}
+
+.toggle-btn:hover::before {
+  left: 100%;
 }
 
 .preview-content {
-  padding: 2rem;
-  min-height: 200px;
+  padding: 0;
+  min-height: 380px;
+  background: #fff;
+  position: relative;
+  z-index: 10;
+  border-radius: 0 0 9px 9px;
+  overflow: hidden;
+  margin: 0;
+}
+
+.component-container {
+  background: #ffffff;
+  min-height: 380px;
+  width: 100%;
+  position: relative;
 }
 
 .error-message {
