@@ -87,7 +87,7 @@ const renderComponent = async (code: string) => {
         const puleoLink = document.createElement("link")
         puleoLink.rel = "stylesheet"
         puleoLink.href =
-          "https://cdn.jsdelivr.net/npm/@lttr/puleo@0.6.1/output/puleo.min.css"
+          "https://cdn.jsdelivr.net/npm/@lttr/puleo@0.6.1/output/puleo.post.css"
         shadow.appendChild(puleoLink)
 
         // Create a container for the generated HTML

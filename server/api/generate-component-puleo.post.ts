@@ -17,14 +17,15 @@ export default defineEventHandler(async (event) => {
     if (html) {
       // If HTML is provided, add CSS styling without changing structure
       prompt = `Requirements:
-- Add CSS styling to the provided HTML using Puleo CSS variables
+- Add CSS styling to the provided HTML using Puleo CSS framework
 - DO NOT change the HTML structure, elements, or content - only add CSS styling
 - Use CSS custom properties (CSS variables) from Puleo CSS for ALL styling
-- NO inline styles - all styling must use CSS classes or style blocks
+- Create semantic CSS classes and apply them to HTML elements
 - Make it responsive and modern-looking using these variables
 - Preserve all existing attributes and accessibility features
-- Include a <style> block with CSS that uses Puleo variables
+- Include a <style> block with CSS that uses Puleo variables with proper fallback values
 - NO JavaScript modifications
+- DO NOT include CSS framework links - the framework is already loaded
 
 Provided HTML:
 ${html}
@@ -34,17 +35,19 @@ ${puleoVariables}
 
 Component Description: ${description}
 
-Return only the complete HTML content with CSS styling using these Puleo variables. No explanations, no markdown formatting, no triple backticks, just the raw HTML with embedded CSS.`
+Return only the complete HTML content with CSS classes on elements and embedded CSS styling. No explanations, no markdown formatting, no triple backticks, just the raw HTML with embedded CSS.`
     } else {
       // Fallback to original behavior if no HTML provided
       prompt = `Requirements:
 - Generate ONLY semantic HTML with CSS styling
 - Use CSS custom properties (CSS variables) from Puleo CSS for ALL styling
+- Create semantic CSS classes and apply them to HTML elements
 - NO inline styles - all styling must use CSS classes or style blocks
 - Make it responsive and modern-looking using these variables
 - Use proper HTML structure and accessibility attributes
 - NO JavaScript, NO custom elements, NO Shadow DOM - just plain HTML with CSS
-- Include a <style> block with CSS that uses Puleo variables
+- Include a <style> block with CSS that uses Puleo variables with proper fallback values
+- DO NOT include CSS framework links - the framework is already loaded
 - The HTML should be ready to be inserted into a web component programmatically
 
 Available Puleo CSS Variables:
@@ -52,7 +55,7 @@ ${puleoVariables}
 
 Component Description: ${description}
 
-Return only the complete HTML content with CSS styling using these Puleo variables. No explanations, no markdown formatting, no triple backticks, just the raw HTML with embedded CSS.`
+Return only the complete HTML content with CSS classes on elements and embedded CSS styling. No explanations, no markdown formatting, no triple backticks, just the raw HTML with embedded CSS.`
     }
 
     const componentCode = await callClaude(prompt)
