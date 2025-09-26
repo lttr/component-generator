@@ -12,9 +12,10 @@ export const getPuleoCssVariables = async (): Promise<string> => {
   }
 
   try {
+    const appConfig = useAppConfig()
     // Fetch the CSS file
     const response = await fetch(
-      "https://cdn.jsdelivr.net/npm/@lttr/puleo@0.6.1/output/puleo.post.css",
+      `${appConfig.puleoCdn}${appConfig.puleoVersion}/output/puleo.post.css`,
     )
 
     if (!response.ok) {

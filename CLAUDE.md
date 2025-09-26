@@ -75,7 +75,7 @@ The server endpoint:
 - Uses `@anthropic-ai/sdk` package
 - Calls `claude-sonnet-4-20250514` model
 - Sends structured prompt requesting Web Components with Shadow DOM
-- Uses Tailwind CSS v4 via `https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4`
+- Uses Tailwind CSS v4 via configurable CDN URLs (see config/versions.ts)
 - Returns complete Web Component code with proper scoping and no custom JavaScript logic
 
 ## Technical Notes
