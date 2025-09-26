@@ -1,5 +1,7 @@
-import { readFile } from "fs/promises"
-import { join } from "path"
+import { readFileSync } from "fs"
+
+const exampleDescription = readFileSync("examples/card-prompt.txt", "utf-8")
+const exampleOutput = readFileSync("examples/card.html", "utf-8")
 
 export default defineEventHandler(async (event) => {
   try {
@@ -11,16 +13,6 @@ export default defineEventHandler(async (event) => {
         statusMessage: "Description is required",
       })
     }
-
-    // Read example files
-    const exampleDescription = await readFile(
-      join(process.cwd(), "server/examples/card-prompt.txt"),
-      "utf-8",
-    )
-    const exampleOutput = await readFile(
-      join(process.cwd(), "server/examples/card.html"),
-      "utf-8",
-    )
 
     const prompt = `<objective>
 Generate semantic HTML without CSS or JavaScript for the provided component description.

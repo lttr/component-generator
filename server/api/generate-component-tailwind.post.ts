@@ -1,5 +1,11 @@
-import { readFile } from "fs/promises"
-import { join } from "path"
+import { readFileSync } from "fs"
+
+const exampleDescription = readFileSync("examples/card-prompt.txt", "utf-8")
+const exampleInputHtml = readFileSync("examples/card.html", "utf-8")
+const exampleTailwindOutput = readFileSync(
+  "examples/card-tailwind.html",
+  "utf-8",
+)
 
 export default defineEventHandler(async (event) => {
   try {
@@ -18,20 +24,6 @@ export default defineEventHandler(async (event) => {
         statusMessage: "HTML is required",
       })
     }
-
-    // Read example files
-    const exampleDescription = await readFile(
-      join(process.cwd(), "server/examples/card-prompt.txt"),
-      "utf-8",
-    )
-    const exampleInputHtml = await readFile(
-      join(process.cwd(), "server/examples/card.html"),
-      "utf-8",
-    )
-    const exampleOutput = await readFile(
-      join(process.cwd(), "server/examples/card-tailwind.html"),
-      "utf-8",
-    )
 
     const prompt = `<objective>
 Add Tailwind CSS v4 utility classes to the provided HTML.
@@ -54,7 +46,7 @@ Input HTML:
 ${exampleInputHtml.trim()}
 
 Expected Output:
-${exampleOutput.trim()}
+${exampleTailwindOutput.trim()}
 </example>
 
 <input>

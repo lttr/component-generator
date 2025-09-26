@@ -1,5 +1,8 @@
-import { readFile } from "fs/promises"
-import { join } from "path"
+import { readFileSync } from "fs"
+
+const exampleDescription = readFileSync("examples/card-prompt.txt", "utf-8")
+const exampleInputHtml = readFileSync("examples/card.html", "utf-8")
+const examplePuleoOutput = readFileSync("examples/card-puleo.html", "utf-8")
 
 export default defineEventHandler(async (event) => {
   try {
@@ -21,20 +24,6 @@ export default defineEventHandler(async (event) => {
 
     // Get cached Puleo CSS variables
     const puleoVariables = await getPuleoCssVariables()
-
-    // Read example files
-    const exampleDescription = await readFile(
-      join(process.cwd(), "server/examples/card-prompt.txt"),
-      "utf-8",
-    )
-    const exampleInputHtml = await readFile(
-      join(process.cwd(), "server/examples/card.html"),
-      "utf-8",
-    )
-    const exampleOutput = await readFile(
-      join(process.cwd(), "server/examples/card-puleo.html"),
-      "utf-8",
-    )
 
     const prompt = `<objective>
 Add CSS styling to the provided HTML using Puleo CSS framework.
@@ -59,7 +48,7 @@ Input HTML:
 ${exampleInputHtml.trim()}
 
 Expected Output:
-${exampleOutput.trim()}
+${examplePuleoOutput.trim()}
 </example>
 
 <context>
