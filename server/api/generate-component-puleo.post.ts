@@ -23,7 +23,7 @@ export default defineEventHandler(async (event) => {
     }
 
     // Get cached Puleo CSS variables
-    const puleoVariables = await getPuleoCssVariables()
+    const puleoSource = await getPuleoFrameworkCode()
 
     const prompt = `<objective>
 Add CSS styling to the provided HTML using Puleo CSS framework.
@@ -31,7 +31,8 @@ Add CSS styling to the provided HTML using Puleo CSS framework.
 
 <requirements>
 - DO NOT change the HTML structure, elements, or content - only add CSS styling
-- Use CSS custom properties (CSS variables) from Puleo CSS for ALL styling
+- Use CSS custom properties (CSS variables) from Puleo CSS for ALL styling, if possible
+- Use helper classes from Puleo CSS if applicable
 - Create semantic CSS classes and apply them to HTML elements
 - Make it responsive and modern-looking using these variables
 - Preserve all existing attributes and accessibility features
@@ -39,6 +40,7 @@ Add CSS styling to the provided HTML using Puleo CSS framework.
 - NO JavaScript modifications
 - NO inline SVG elements - use text, emojis, or CSS-based graphics instead
 - DO NOT include CSS framework links - the framework is already loaded
+- CRITICAL: Every prepared CSS variable or helper class is attached in <context> block, if you create your own you have to implement it yourself
 </requirements>
 
 <example>
@@ -52,8 +54,8 @@ ${examplePuleoOutput.trim()}
 </example>
 
 <context>
-Available Puleo Variables:
-${puleoVariables}
+Whole Puleo CSS framework:
+${puleoSource}
 </context>
 
 <input>
