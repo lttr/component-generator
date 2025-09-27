@@ -33,6 +33,9 @@ interface Props {
 const props = defineProps<Props>()
 const appConfig = useAppConfig()
 
+const tailwindCdn = computed(() => appConfig.tailwindCdn)
+const tailwindVersion = computed(() => appConfig.tailwindVersion)
+
 const showCode = ref<boolean>(false)
 const error = ref<string>("")
 const container = ref<HTMLElement | null>(null)
@@ -88,7 +91,7 @@ const renderComponent = async (code: string) => {
 
         // Add Tailwind CSS v4 CDN
         const tailwindScript = document.createElement("script")
-        tailwindScript.src = `${appConfig.tailwindCdn}${appConfig.tailwindVersion}`
+        tailwindScript.src = `${tailwindCdn.value}${tailwindVersion.value}`
         shadow.appendChild(tailwindScript)
 
         // Create a container for the generated HTML

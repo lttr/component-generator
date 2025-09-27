@@ -33,6 +33,9 @@ interface Props {
 const props = defineProps<Props>()
 const appConfig = useAppConfig()
 
+const puleoCdn = computed(() => appConfig.puleoCdn)
+const puleoVersion = computed(() => appConfig.puleoVersion)
+
 const showCode = ref<boolean>(false)
 const error = ref<string>("")
 const container = ref<HTMLElement | null>(null)
@@ -89,7 +92,7 @@ const renderComponent = async (code: string) => {
         // Add Puleo CSS via link tag
         const puleoLink = document.createElement("link")
         puleoLink.rel = "stylesheet"
-        puleoLink.href = `${appConfig.puleoCdn}${appConfig.puleoVersion}/output/puleo.post.css`
+        puleoLink.href = `${puleoCdn.value}${puleoVersion.value}/output/puleo.post.css`
         shadow.appendChild(puleoLink)
 
         // Create a container for the generated HTML
