@@ -86,3 +86,4 @@ The server endpoint:
 - TypeScript enabled with strict type checking
 - ESLint + Prettier for code formatting
 - Always verify code after changes with `npm run verify` command.
+- double tilda ~~ is fine in Nuxt project and in import paths it refers to root directory

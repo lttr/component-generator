@@ -1,4 +1,5 @@
 import { readFileSync } from "fs"
+import { TAILWIND_VERSION } from "~~/shared/constants"
 
 const exampleDescription = readFileSync("examples/card-prompt.txt", "utf-8")
 const exampleInputHtml = readFileSync("examples/card.html", "utf-8")
@@ -26,13 +27,13 @@ export default defineEventHandler(async (event) => {
     }
 
     const prompt = `<objective>
-Add Tailwind CSS v4 utility classes to the provided HTML.
+Add Tailwind CSS version ${TAILWIND_VERSION} utility classes to the provided HTML.
 </objective>
 
 <requirements>
-- Add ONLY Tailwind CSS v4 utility classes to the provided HTML
+- Add ONLY Tailwind CSS utility classes to the provided HTML
 - DO NOT change the HTML structure, elements, or content - only add class attributes
-- Use Tailwind CSS v4 syntax and classes for ALL styling
+- Use Tailwind CSS syntax and classes for ALL styling
 - Make it responsive and modern-looking using Tailwind classes
 - Preserve all existing attributes and accessibility features
 - NO JavaScript, NO custom elements, NO Shadow DOM modifications

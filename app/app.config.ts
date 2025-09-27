@@ -1,7 +1,6 @@
-const PULEO_VERSION = "0.8.1"
-const TAILWIND_VERSION = "4.1.13"
+import { PULEO_VERSION, TAILWIND_VERSION } from "../shared/constants"
 
 export default defineAppConfig({
-  tailwindCdn: `https://cdn.jsdelivr.net/npm/@tailwindcss/browser@${TAILWIND_VERSION}`,
+  tailwindCdn: `https://cdn.tailwindcss.com/${TAILWIND_VERSION}`,
   puleoCdn: `https://cdn.jsdelivr.net/npm/@lttr/puleo@${PULEO_VERSION}/output/puleo.host.min.css`,
 })
