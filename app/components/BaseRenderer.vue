@@ -151,6 +151,9 @@ watch(
   border-radius: 12px;
   overflow: hidden;
   position: relative;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
 }
 
 .renderer-section::before {
@@ -239,6 +242,9 @@ watch(
   border-radius: 0 0 10px 10px;
   overflow: hidden;
   margin: 0;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .component-container {
@@ -247,6 +253,7 @@ watch(
   width: 100%;
   position: relative;
   padding: 2rem;
+  flex: 1;
 }
 
 .error-message {

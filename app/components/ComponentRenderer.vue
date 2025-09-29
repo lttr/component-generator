@@ -227,6 +227,8 @@ const viewMode = ref<ViewMode>("dual")
   position: relative;
   overflow: visible;
   min-height: 400px;
+  display: flex;
+  flex-direction: column;
 }
 
 .vhs-screen-bezel::before {
