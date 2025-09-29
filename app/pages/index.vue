@@ -34,6 +34,7 @@
     <ComponentRenderer
       v-if="tailwindComponent || puleoComponent"
       :tailwind-code="tailwindComponent"
+      :tailwind-css="tailwindCss"
       :puleo-code="puleoComponent"
     />
 
@@ -72,6 +73,7 @@ import {
 } from "~/composables/useGenerationHistory"
 
 const tailwindComponent = ref<string>("")
+const tailwindCss = ref<string>("")
 const puleoComponent = ref<string>("")
 const loading = ref<boolean>(false)
 const selectedRecordId = ref<string>("")
@@ -97,7 +99,7 @@ const handleGenerate = async (description: string) => {
     const [tailwindResponse, puleoResponse] = await Promise.all([
       $fetch<{
         success: boolean
-        data: { component: string }
+        data: { component: string; css: string }
       }>("/api/generate-component-tailwind", {
         method: "POST",
         body: { description, html: semanticHtml },
@@ -112,6 +114,7 @@ const handleGenerate = async (description: string) => {
     ])
 
     tailwindComponent.value = tailwindResponse.data.component
+    tailwindCss.value = tailwindResponse.data.css
     puleoComponent.value = puleoResponse.data.component
 
     // Save to history

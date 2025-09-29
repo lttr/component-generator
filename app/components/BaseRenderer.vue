@@ -29,7 +29,8 @@ import { createHighlighter } from "shiki"
 interface Props {
   componentCode: string
   frameworkName: string
-  cdnUrl: string
+  componentCss?: string
+  cdnUrl?: string
   useScriptTag?: boolean
 }
 
@@ -86,15 +87,23 @@ const renderComponent = async (code: string) => {
 
         const shadow = this.attachShadow({ mode: "open" })
 
-        if (props.useScriptTag) {
-          const scriptTag = document.createElement("script")
-          scriptTag.src = props.cdnUrl
-          shadow.appendChild(scriptTag)
-        } else {
-          const linkTag = document.createElement("link")
-          linkTag.rel = "stylesheet"
-          linkTag.href = props.cdnUrl
-          shadow.appendChild(linkTag)
+        // If we have component CSS, inject it directly
+        if (props.componentCss) {
+          const styleTag = document.createElement("style")
+          styleTag.textContent = props.componentCss
+          shadow.appendChild(styleTag)
+        } else if (props.cdnUrl) {
+          // Fallback to CDN if no CSS provided
+          if (props.useScriptTag) {
+            const scriptTag = document.createElement("script")
+            scriptTag.src = props.cdnUrl
+            shadow.appendChild(scriptTag)
+          } else {
+            const linkTag = document.createElement("link")
+            linkTag.rel = "stylesheet"
+            linkTag.href = props.cdnUrl
+            shadow.appendChild(linkTag)
+          }
         }
 
         const container = document.createElement("div")

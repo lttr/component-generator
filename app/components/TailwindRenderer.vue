@@ -1,17 +1,16 @@
 <template>
   <BaseRenderer
     :component-code="componentCode"
+    :component-css="componentCss"
     framework-name="Tailwind CSS"
-    :cdn-url="appConfig.tailwindCdn"
-    use-script-tag
   />
 </template>
 
 <script setup lang="ts">
 interface Props {
   componentCode: string
+  componentCss?: string
 }
 
 defineProps<Props>()
-const appConfig = useAppConfig()
 </script>

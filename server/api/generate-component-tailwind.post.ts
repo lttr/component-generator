@@ -1,5 +1,6 @@
 import { readFileSync } from "fs"
 import { TAILWIND_VERSION } from "~~/shared/constants"
+import { processTailwindHtmlCached } from "../utils/tailwindCompiler"
 
 const exampleDescription = readFileSync("examples/card-prompt.txt", "utf-8")
 const exampleInputHtml = readFileSync("examples/card.html", "utf-8")
@@ -61,10 +62,14 @@ Return only the HTML content with Tailwind classes added. No explanations, no ma
 
     const componentCode = await callClaude(prompt)
 
+    // Generate CSS from the HTML with Tailwind classes
+    const css = await processTailwindHtmlCached(componentCode)
+
     return {
       success: true,
       data: {
         component: componentCode,
+        css: css,
       },
     }
   } catch (error: unknown) {

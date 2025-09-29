@@ -38,7 +38,10 @@
         v-if="viewMode === 'dual' || viewMode === 'tailwind'"
         class="vhs-screen-bezel"
       >
-        <TailwindRenderer :component-code="tailwindCode" />
+        <TailwindRenderer
+          :component-code="tailwindCode"
+          :component-css="tailwindCss"
+        />
       </div>
       <div
         v-if="viewMode === 'dual' || viewMode === 'puleo'"
@@ -53,6 +56,7 @@
 <script setup lang="ts">
 interface Props {
   tailwindCode: string
+  tailwindCss?: string
   puleoCode: string
 }
 
