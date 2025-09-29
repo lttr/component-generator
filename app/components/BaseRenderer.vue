@@ -71,6 +71,53 @@ const updateHighlightedCode = async (componentCode: string) => {
   }
 }
 
+let componentElement: HTMLElement | null = null
+let shadowRoot: ShadowRoot | null = null
+
+class DynamicComponent extends HTMLElement {
+  constructor() {
+    super()
+    shadowRoot = this.attachShadow({ mode: "open" })
+  }
+
+  updateContent(
+    code: string,
+    css: string,
+    cdnUrl: string,
+    useScriptTag: boolean,
+  ) {
+    if (!shadowRoot) {
+      return
+    }
+
+    // Clear existing content
+    shadowRoot.innerHTML = ""
+
+    // Add CSS/CDN
+    if (css) {
+      const styleTag = document.createElement("style")
+      styleTag.textContent = css
+      shadowRoot.appendChild(styleTag)
+    } else if (cdnUrl) {
+      if (useScriptTag) {
+        const scriptTag = document.createElement("script")
+        scriptTag.src = cdnUrl
+        shadowRoot.appendChild(scriptTag)
+      } else {
+        const linkTag = document.createElement("link")
+        linkTag.rel = "stylesheet"
+        linkTag.href = cdnUrl
+        shadowRoot.appendChild(linkTag)
+      }
+    }
+
+    // Add component content
+    const contentContainer = document.createElement("div")
+    contentContainer.innerHTML = code
+    shadowRoot.appendChild(contentContainer)
+  }
+}
+
 const renderComponent = async (code: string) => {
   try {
     error.value = ""
@@ -79,47 +126,38 @@ const renderComponent = async (code: string) => {
       return
     }
 
-    container.value.innerHTML = ""
-
     const componentName = `${props.frameworkName}-component`
 
-    class DynamicComponent extends HTMLElement {
-      constructor() {
-        super()
-
-        const shadow = this.attachShadow({ mode: "open" })
-
-        // If we have component CSS, inject it directly
-        if (props.componentCss) {
-          const styleTag = document.createElement("style")
-          styleTag.textContent = props.componentCss
-          shadow.appendChild(styleTag)
-        } else if (props.cdnUrl) {
-          // Fallback to CDN if no CSS provided
-          if (props.useScriptTag) {
-            const scriptTag = document.createElement("script")
-            scriptTag.src = props.cdnUrl
-            shadow.appendChild(scriptTag)
-          } else {
-            const linkTag = document.createElement("link")
-            linkTag.rel = "stylesheet"
-            linkTag.href = props.cdnUrl
-            shadow.appendChild(linkTag)
-          }
-        }
-
-        const container = document.createElement("div")
-        container.innerHTML = code
-        shadow.appendChild(container)
-      }
-    }
-
+    // Define custom element only once
     if (!customElements.get(componentName)) {
       customElements.define(componentName, DynamicComponent)
     }
 
-    const componentElement = document.createElement(componentName)
-    container.value.appendChild(componentElement)
+    // Create element only if it doesn't exist
+    if (!componentElement) {
+      container.value.innerHTML = ""
+      componentElement = document.createElement(
+        componentName,
+      ) as HTMLElement & {
+        updateContent: (
+          code: string,
+          css: string,
+          cdnUrl: string,
+          useScriptTag: boolean,
+        ) => void
+      }
+      container.value.appendChild(componentElement)
+    }
+
+    // Update the content of the existing element
+    if (componentElement && "updateContent" in componentElement) {
+      ;(componentElement as any).updateContent(
+        code,
+        props.componentCss || "",
+        props.cdnUrl || "",
+        props.useScriptTag,
+      )
+    }
 
     await nextTick()
     container.value.scrollTop = 0
@@ -127,6 +165,8 @@ const renderComponent = async (code: string) => {
     error.value = e instanceof Error ? e.message : "Unknown error"
     if (container.value) {
       container.value.innerHTML = ""
+      componentElement = null
+      shadowRoot = null
     }
   }
 }
@@ -137,9 +177,7 @@ watch(
     if (newCode) {
       await nextTick()
       renderComponent(newCode)
-      console.log("renderComponent", newCode)
       updateHighlightedCode(newCode)
-      console.log("updateHighlightedCode")
     }
   },
   { immediate: true },
@@ -241,7 +279,6 @@ watch(
   background: #fff;
   position: relative;
   z-index: 10;
-  border-radius: 0 0 10px 10px;
   overflow: hidden;
   margin: 0;
   flex: 1;
@@ -268,8 +305,6 @@ watch(
 }
 
 .code-display {
-  margin-bottom: 1.5rem;
-  border-radius: 8px;
   overflow-x: auto;
 }
 
@@ -278,7 +313,6 @@ watch(
   padding: 1.5rem;
   white-space: pre-wrap;
   word-wrap: break-word;
-  border-radius: 8px;
 }
 
 .code-display :deep(code) {
