@@ -33,6 +33,9 @@ Add CSS styling to the provided HTML using Puleo CSS framework.
 - Use helper classes from Puleo CSS if applicable
 - Create semantic CSS classes and apply them to HTML elements
 - Make it responsive and modern-looking using these variables
+- CRITICAL: Design for UNIVERSAL compatibility - components must work perfectly in BOTH light and dark modes
+- Use neutral colors and proper contrast ratios that work well in light/dark themes
+- Avoid colors or contrast that only work in one theme - ensure readability in both light and dark environments
 - Preserve all existing attributes and accessibility features
 - Include a <style> block with CSS that uses Puleo variables and any custom properties you define
 - NO JavaScript modifications

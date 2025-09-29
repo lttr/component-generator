@@ -28,6 +28,9 @@ Add Tailwind CSS version ${TAILWIND_VERSION} utility classes to the provided HTM
 - DO NOT change the HTML structure, elements, or content - only add class attributes
 - Use Tailwind CSS syntax and classes for ALL styling
 - Make it responsive and modern-looking using Tailwind classes
+- CRITICAL: Design for UNIVERSAL compatibility - components must work perfectly in BOTH light and dark modes
+- Use neutral colors that work well in light/dark themes (grays, whites, blacks with proper contrast)
+- Avoid colors that only work in one theme - ensure readability in both light and dark environments
 - Preserve all existing attributes and accessibility features
 - NO JavaScript, NO custom elements, NO Shadow DOM modifications
 - NO inline SVG elements - use text, emojis, or CSS-based graphics instead
