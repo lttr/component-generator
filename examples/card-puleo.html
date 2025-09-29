@@ -1,41 +1,60 @@
 <style>
   .card {
-    max-width: 40ch;
-    border: var(--border-2);
-    border-radius: var(--radius-2);
+    max-width: var(--size-content-2);
     padding: var(--space-4);
-    box-shadow: var(--shadow-3);
+    background-color: var(--surface-1);
+    border-radius: var(--radius-2);
+    box-shadow: var(--shadow-2);
   }
 
-  .content {
-    margin-top: var(--space-2);
+  .card-header {
+    margin-bottom: var(--space-3);
   }
 
-  .subheading {
+  .card-title {
+    font-size: var(--font-size-1);
+    color: var(--text-color-1);
+    margin-bottom: var(--space-2);
+  }
+
+  .card-subtitle {
     font-size: var(--font-size--1);
     color: var(--text-color-2);
   }
 
-  .footer {
+  .card-content {
+    margin-bottom: var(--space-3);
+    color: var(--text-color-1);
+  }
+
+  .card-footer {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    color: var(--text-color-2);
+  }
+
+  .card-link {
+    color: var(--link-color);
+    text-decoration: none;
   }
 </style>
 
-<article href="#" class="card p-stack">
-  <header class="content p-flow">
-    <h2 class="p-heading-4">Yet another generated component thing</h2>
-    <h3 class="subheading">By John Doe</h3>
+<article class="card p-stack">
+  <header class="card-header p-flow">
+    <h2 class="card-title p-heading-4">Card Title</h2>
+    <h3 class="card-subtitle p-secondary-text-regular">Card Subtitle</h3>
   </header>
 
-  <p>
-    Lorem ipsum dolor sit, amet consectetur adipisicing elit. At velit illum
-    provident a, ipsa maiores deleniti consectetur nobis et eaque.
+  <p class="card-content">
+    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam in dui
+    mauris. Vivamus hendrerit arcu sed erat molestie vehicula.
   </p>
 
-  <foter class="footer">
-    <span class="">31/06/2025</span>
-    <a href="#" class="">Read more</a>
-  </foter>
+  <footer class="card-footer p-cluster">
+    <time datetime="2023-06-15">15/06/2023</time>
+    <a href="#" class="card-link" aria-label="Read more about this article"
+      >Read more</a
+    >
+  </footer>
 </article>
