@@ -1,5 +1,4 @@
 import { useLocalStorage, StorageSerializers } from "@vueuse/core"
-import { exampleData } from "~/utils/exampleData"
 
 export interface GenerationRecord {
   id: string
@@ -74,7 +73,7 @@ export function useGenerationHistory() {
         id: "example-card",
         timestamp: Date.now() - 86400000, // 24 hours ago
         description: exampleData.description,
-        tailwindCode: exampleData.tailwindCode,
+        tailwindCode: exampleData.tailwindCodeWithStyle,
         puleoCode: exampleData.puleoCode,
       }
       history.value.push(exampleRecord)
