@@ -31,16 +31,18 @@ Add CSS styling to the provided HTML using Puleo CSS framework.
 
 <requirements>
 - DO NOT change the HTML structure, elements, or content - only add CSS styling
-- Use CSS custom properties (CSS variables) from Puleo CSS for ALL styling, if possible
+- PREFER using existing CSS custom properties from Puleo CSS framework whenever possible
+- Only create additional CSS custom properties when existing Puleo variables don't cover your needs
+- If you create new CSS custom properties, MUST define them at the top of your <style> block
 - Use helper classes from Puleo CSS if applicable
 - Create semantic CSS classes and apply them to HTML elements
 - Make it responsive and modern-looking using these variables
 - Preserve all existing attributes and accessibility features
-- Include a <style> block with CSS that uses Puleo variables with proper fallback values
+- Include a <style> block with CSS that uses Puleo variables and any custom properties you define
 - NO JavaScript modifications
 - NO inline SVG elements - use text, emojis, or CSS-based graphics instead
 - DO NOT include CSS framework links - the framework is already loaded
-- CRITICAL: Every prepared CSS variable or helper class is attached in <context> block, if you create your own you have to implement it yourself
+- CRITICAL: Any CSS custom properties you use must either exist in the Puleo framework OR be defined by you in the CSS
 </requirements>
 
 <example>
