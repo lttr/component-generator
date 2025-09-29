@@ -13,13 +13,9 @@ export const getPuleoFrameworkCode = async (): Promise<string | undefined> => {
 
   try {
     const appConfig = useAppConfig()
-    const puleoCdn = appConfig.puleoCdn
-    const puleoVersion = appConfig.puleoVersion
 
     // Fetch the CSS file
-    const response = await fetch(
-      `${puleoCdn}${puleoVersion}/output/puleo.post.css`,
-    )
+    const response = await fetch(appConfig.puleoSourceCodeUrl)
 
     if (!response.ok) {
       throw new Error(`Failed to fetch Puleo CSS: ${response.status}`)
