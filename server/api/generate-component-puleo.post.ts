@@ -28,8 +28,8 @@ Add CSS styling to the provided HTML using Puleo CSS framework.
 <requirements>
 - DO NOT change the HTML structure, elements, or content - only add CSS styling
 - PREFER using existing CSS custom properties from Puleo CSS framework whenever possible
-- Only create additional CSS custom properties when existing Puleo variables don't cover your needs
-- If you create new CSS custom properties, MUST define them at the top of your <style> block and scope them to component's elements
+- ONLY create additional CSS custom properties when existing Puleo variables don't cover your needs
+- In this rare case, you can create the variables but place them in a <style> block at the top and use component root element to scope them
 - Use helper classes from Puleo CSS if applicable
 - Create semantic CSS classes and apply them to HTML elements
 - Make it responsive and modern-looking using these variables
