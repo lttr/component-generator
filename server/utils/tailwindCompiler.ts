@@ -15,7 +15,7 @@ export function extractTailwindClasses(html: string): string[] {
   let match
 
   while ((match = classRegex.exec(html)) !== null) {
-    const classNames = match[1].split(/\s+/).filter(Boolean)
+    const classNames = match[1]?.split(/\s+/).filter(Boolean) || []
     classes.push(...classNames)
   }
 
@@ -62,8 +62,8 @@ async function getTailwindCompiler(): Promise<TailwindCompiler> {
 
           if (typeof result === "string") {
             return result
-          } else if (result && result.css) {
-            return result.css
+          } else if (result && typeof result === "object" && "css" in result) {
+            return (result as { css: string }).css
           }
 
           return ""

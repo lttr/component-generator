@@ -35,6 +35,8 @@ interface Props {
 }
 
 const props = withDefaults(defineProps<Props>(), {
+  componentCss: "",
+  cdnUrl: "",
   useScriptTag: false,
 })
 
