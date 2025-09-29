@@ -2,7 +2,7 @@
   <BaseRenderer
     :component-code="componentCode"
     :component-css="componentCss"
-    framework-name="Tailwind CSS"
+    framework-name="tailwind"
   />
 </template>
 

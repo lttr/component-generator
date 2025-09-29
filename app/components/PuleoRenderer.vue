@@ -1,7 +1,7 @@
 <template>
   <BaseRenderer
     :component-code="componentCode"
-    framework-name="Puleo CSS"
+    framework-name="puleo"
     :cdn-url="appConfig.puleoCdn"
   />
 </template>

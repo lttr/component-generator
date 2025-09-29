@@ -81,7 +81,7 @@ const renderComponent = async (code: string) => {
 
     container.value.innerHTML = ""
 
-    const componentName = `${props.frameworkName.toLowerCase().replace(/\s+/g, "-")}-component`
+    const componentName = `${props.frameworkName}-component`
 
     class DynamicComponent extends HTMLElement {
       constructor() {
@@ -137,7 +137,9 @@ watch(
     if (newCode) {
       await nextTick()
       renderComponent(newCode)
+      console.log("renderComponent", newCode)
       updateHighlightedCode(newCode)
+      console.log("updateHighlightedCode")
     }
   },
   { immediate: true },
