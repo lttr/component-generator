@@ -1,3 +1,5 @@
+import { exampleData } from "../utils/exampleData.server"
+
 export default defineEventHandler(async (event) => {
   try {
     const { description, html } = await readBody(event)

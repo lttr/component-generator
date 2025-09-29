@@ -1,4 +1,5 @@
 import { processTailwindHtmlCached } from "../utils/tailwindCompiler"
+import { exampleData } from "../utils/exampleData.server"
 
 export default defineEventHandler(async (event) => {
   try {

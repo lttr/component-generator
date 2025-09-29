@@ -11,8 +11,8 @@ const readExample = (filename: string): string => {
 
 export const exampleData = {
   description: readExample("card-prompt.txt"),
+  html: readExample("card.html"),
+  puleoCode: readExample("card-puleo.html"),
   tailwindCode: readExample("card-tailwind.html"),
   tailwindCodeWithStyle: readExample("card-tailwind-with-style.html"),
-  puleoCode: readExample("card-puleo.html"),
-  html: readExample("card.html"),
 }
