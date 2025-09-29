@@ -58,7 +58,7 @@ async function getTailwindCompiler(): Promise<TailwindCompiler> {
     compilerInstance = {
       build: async (candidates: string[]): Promise<string> => {
         try {
-          const result = await compiler.build(candidates)
+          const result = compiler.build(candidates)
 
           if (typeof result === "string") {
             return result
@@ -101,19 +101,19 @@ export async function processTailwindHtml(html: string): Promise<string> {
 }
 
 // Cache for compiled CSS to avoid recompilation
-const cssCache = new Map<string, string>()
+// const cssCache = new Map<string, string>()
 
 // Process HTML with caching
 export async function processTailwindHtmlCached(html: string): Promise<string> {
-  const classes = extractTailwindClasses(html)
-  const cacheKey = classes.sort().join(",")
+  // const classes = extractTailwindClasses(html)
+  // const cacheKey = classes.sort().join(",")
 
-  if (cssCache.has(cacheKey)) {
-    return cssCache.get(cacheKey)!
-  }
+  // if (cssCache.has(cacheKey)) {
+  // return cssCache.get(cacheKey)!
+  // }
 
   const css = await processTailwindHtml(html)
-  cssCache.set(cacheKey, css)
+  // cssCache.set(cacheKey, css)
 
   return css
 }
