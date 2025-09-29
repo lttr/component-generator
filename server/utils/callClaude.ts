@@ -16,8 +16,8 @@ export const callClaude = async (prompt: string): Promise<string> => {
   })
 
   const message = await anthropic.messages.create({
-    // model: "claude-3-5-haiku-20241022",
-    model: "claude-sonnet-4-20250514",
+    model: "claude-3-5-haiku-20241022",
+    // model: "claude-sonnet-4-20250514",
     max_tokens: 5000,
     messages: [
       {

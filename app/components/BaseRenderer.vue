@@ -2,9 +2,6 @@
   <div class="renderer-section">
     <div class="section-header">
       <h3>{{ frameworkName }}</h3>
-      <button class="toggle-btn" @click="showCode = !showCode">
-        {{ showCode ? "Hide Code" : "Show Code" }}
-      </button>
     </div>
 
     <div v-if="error" class="error-message">
@@ -18,7 +15,11 @@
     </div>
 
     <!-- eslint-disable-next-line vue/no-v-html -->
-    <div v-if="showCode" class="code-display" v-html="highlightedCode"></div>
+    <div
+      v-if="props.showCode"
+      class="code-display"
+      v-html="highlightedCode"
+    ></div>
   </div>
 </template>
 
@@ -32,15 +33,16 @@ interface Props {
   componentCss?: string
   cdnUrl?: string
   useScriptTag?: boolean
+  showCode?: boolean
 }
 
 const props = withDefaults(defineProps<Props>(), {
   componentCss: "",
   cdnUrl: "",
   useScriptTag: false,
+  showCode: false,
 })
 
-const showCode = ref<boolean>(false)
 const error = ref<string>("")
 const container = ref<HTMLElement | null>(null)
 const highlightedCode = ref<string>("")
@@ -228,49 +230,6 @@ watch(
   color: var(--vhs-orange);
   text-shadow: 0 0 8px currentColor;
   letter-spacing: 0.1em;
-}
-
-.toggle-btn {
-  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
-  color: var(--vhs-cyan);
-  border: 1px solid var(--vhs-cyan);
-  padding: 0.4rem 0.8rem;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 0.75rem;
-  font-family: "Space Mono", monospace;
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-shadow: 0 0 5px currentColor;
-  transition: all 0.2s ease;
-  position: relative;
-  overflow: hidden;
-}
-
-.toggle-btn::before {
-  content: "";
-  position: absolute;
-  top: 0;
-  left: -100%;
-  width: 100%;
-  height: 100%;
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(0, 255, 255, 0.3) 50%,
-    transparent 100%
-  );
-  transition: left 0.3s ease;
-}
-
-.toggle-btn:hover {
-  background: linear-gradient(135deg, #2a2a2a 0%, #3a3a3a 100%);
-  box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
-  text-shadow: 0 0 10px currentColor;
-}
-
-.toggle-btn:hover::before {
-  left: 100%;
 }
 
 .preview-content {

@@ -26,10 +26,9 @@
         </button>
       </div>
       <div class="vhs-monitor-brand">CLAUDE VISION™ DUAL-SYNC</div>
-      <div class="vhs-signal-indicator">
-        <div class="vhs-signal-light"></div>
-        <span>SIGNAL</span>
-      </div>
+      <button class="vhs-code-toggle" @click="showCode = !showCode">
+        {{ showCode ? "HIDE CODE" : "SHOW CODE" }}
+      </button>
     </div>
 
     <!-- Dual Monitor Display -->
@@ -41,13 +40,14 @@
         <TailwindRenderer
           :component-code="tailwindCode"
           :component-css="tailwindCss"
+          :show-code="showCode"
         />
       </div>
       <div
         v-if="viewMode === 'dual' || viewMode === 'puleo'"
         class="vhs-screen-bezel"
       >
-        <PuleoRenderer :component-code="puleoCode" />
+        <PuleoRenderer :component-code="puleoCode" :show-code="showCode" />
       </div>
     </div>
   </div>
@@ -64,6 +64,7 @@ defineProps<Props>()
 
 type ViewMode = "dual" | "tailwind" | "puleo"
 const viewMode = ref<ViewMode>("dual")
+const showCode = ref<boolean>(false)
 </script>
 
 <style scoped>
@@ -181,23 +182,47 @@ const viewMode = ref<ViewMode>("dual")
   flex-grow: 1;
 }
 
-.vhs-signal-indicator {
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
+.vhs-code-toggle {
+  background: linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%);
+  color: var(--vhs-cyan);
+  border: 1px solid var(--vhs-cyan);
+  padding: 0.4rem 0.8rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.75rem;
   font-family: "Space Mono", monospace;
-  font-size: 0.7rem;
-  color: var(--vhs-neon-green);
+  font-weight: 700;
+  letter-spacing: 0.05em;
   text-shadow: 0 0 5px currentColor;
+  transition: all 0.2s ease;
+  position: relative;
+  overflow: hidden;
 }
 
-.vhs-signal-light {
-  width: 12px;
-  height: 12px;
-  background: var(--vhs-neon-green);
-  border-radius: 50%;
-  box-shadow: 0 0 15px var(--vhs-neon-green);
-  animation: vhs-signal-pulse 2s ease-in-out infinite;
+.vhs-code-toggle::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(0, 255, 255, 0.3) 50%,
+    transparent 100%
+  );
+  transition: left 0.3s ease;
+}
+
+.vhs-code-toggle:hover {
+  background: linear-gradient(135deg, #2a2a2a 0%, #3a3a3a 100%);
+  box-shadow: 0 0 15px rgba(0, 255, 255, 0.5);
+  text-shadow: 0 0 10px currentColor;
+}
+
+.vhs-code-toggle:hover::before {
+  left: 100%;
 }
 
 /* Screen Container */
@@ -425,17 +450,6 @@ const viewMode = ref<ViewMode>("dual")
 }
 
 /* Animations */
-@keyframes vhs-signal-pulse {
-  0%,
-  100% {
-    opacity: 1;
-    box-shadow: 0 0 15px var(--vhs-neon-green);
-  }
-  50% {
-    opacity: 0.7;
-    box-shadow: 0 0 25px var(--vhs-neon-green);
-  }
-}
 
 @keyframes vhs-screen-scan {
   0%,
