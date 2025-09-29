@@ -148,7 +148,6 @@ const stopGlitch = () => {
 }
 
 const setActiveTab = async (tab: "empty" | "example" | "random") => {
-  console.log("Tab clicked:", tab, "loading:", props.loading)
   if (props.loading) {
     return
   }

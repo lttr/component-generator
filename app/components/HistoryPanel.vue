@@ -79,11 +79,6 @@
 </template>
 
 <script setup lang="ts">
-import {
-  useGenerationHistory,
-  type GenerationRecord,
-} from "~/composables/useGenerationHistory"
-
 interface Props {
   isRecording?: boolean
   selectedId?: string

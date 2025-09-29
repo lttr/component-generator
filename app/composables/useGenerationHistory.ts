@@ -1,5 +1,4 @@
 import { useLocalStorage, StorageSerializers } from "@vueuse/core"
-import { exampleData } from "~/utils/exampleData"
 
 export interface GenerationRecord {
   id: string

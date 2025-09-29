@@ -1,8 +1,3 @@
-import { readFileSync } from "fs"
-
-const exampleDescription = readFileSync("examples/card-prompt.txt", "utf-8")
-const exampleOutput = readFileSync("examples/card.html", "utf-8")
-
 export default defineEventHandler(async (event) => {
   try {
     const { description } = await readBody(event)
@@ -30,10 +25,10 @@ Generate semantic HTML without CSS or JavaScript for the provided component desc
 </requirements>
 
 <example>
-Input Description: ${exampleDescription.trim()}
+Input Description: ${exampleData.description}
 
 Expected Output:
-${exampleOutput.trim()}
+${exampleData.html}
 </example>
 
 <input>

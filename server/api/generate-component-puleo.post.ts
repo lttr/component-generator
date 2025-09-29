@@ -1,9 +1,3 @@
-import { readFileSync } from "fs"
-
-const exampleDescription = readFileSync("examples/card-prompt.txt", "utf-8")
-const exampleInputHtml = readFileSync("examples/card.html", "utf-8")
-const examplePuleoOutput = readFileSync("examples/card-puleo.html", "utf-8")
-
 export default defineEventHandler(async (event) => {
   try {
     const { description, html } = await readBody(event)
@@ -46,13 +40,13 @@ Add CSS styling to the provided HTML using Puleo CSS framework.
 </requirements>
 
 <example>
-Input Description: ${exampleDescription.trim()}
+Input Description: ${exampleData.description}
 
 Input HTML:
-${exampleInputHtml.trim()}
+${exampleData.html}
 
 Expected Output:
-${examplePuleoOutput.trim()}
+${exampleData.puleoCode}
 </example>
 
 <context>

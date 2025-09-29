@@ -1,13 +1,4 @@
-import { readFileSync } from "fs"
-import { TAILWIND_VERSION } from "~~/shared/constants"
 import { processTailwindHtmlCached } from "../utils/tailwindCompiler"
-
-const exampleDescription = readFileSync("examples/card-prompt.txt", "utf-8")
-const exampleInputHtml = readFileSync("examples/card.html", "utf-8")
-const exampleTailwindOutput = readFileSync(
-  "examples/card-tailwind.html",
-  "utf-8",
-)
 
 export default defineEventHandler(async (event) => {
   try {
@@ -42,13 +33,13 @@ Add Tailwind CSS version ${TAILWIND_VERSION} utility classes to the provided HTM
 </requirements>
 
 <example>
-Input Description: ${exampleDescription.trim()}
+Input Description: ${exampleData.description}
 
 Input HTML:
-${exampleInputHtml.trim()}
+${exampleData.html}
 
 Expected Output:
-${exampleTailwindOutput.trim()}
+${exampleData.tailwindCode}
 </example>
 
 <input>
