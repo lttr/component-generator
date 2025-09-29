@@ -432,6 +432,11 @@ onUnmounted(() => {
   color: var(--vhs-pink);
 }
 
+.vhs-play-button:focus {
+  outline: 3px solid var(--vhs-pink);
+  outline-offset: 2px;
+}
+
 .vhs-play-button:disabled {
   opacity: 0.7;
   cursor: not-allowed;
